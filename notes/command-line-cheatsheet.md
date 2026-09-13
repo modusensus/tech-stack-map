@@ -10,6 +10,28 @@
 - 二者都是"命令行环境"，不是"编程语言"
 - 你感觉命令多，是因为 Git、Node.js、Python 等工具往 PATH 里塞了可执行程序——那些是"你装的工具"，不是"必须会的命令"
 - 在 WSL 里用 bash 的话，Windows 原生命令行完全可以绕过
+- ⚠️ CMD 和 PowerShell **语法不通用**：CMD 的招式在 PowerShell 里可能直接报错（详见下一节）
+
+## ⚠️ 方言陷阱：CMD 的招式 ≠ PowerShell 的招式
+
+> 踩坑实录（2026-09-05）：在 PowerShell 里敲 `type nul>app.py` 想建空文件，
+> 报错 `Cannot find path '...\nul>app.py'`——因为这是 **CMD 方言**，PowerShell 听不懂。
+
+**怎么判断自己在哪个环境：** 看提示符开头——`C:\...>` 是 CMD；`PS D:\...>` 是 PowerShell。
+
+| 事情         | CMD 写法            | PowerShell 写法                  | 混用的下场                                       |
+| ------------ | ------------------- | -------------------------------- | ------------------------------------------------ |
+| 创建空文件   | `type nul > 文件名` | `New-Item 文件名`（简写 `ni`） | pwsh 里没有 nul"黑洞设备"，被当成普通文件名      |
+| 引用环境变量 | `%USERPROFILE%`     | `$env:USERPROFILE`             | `%...%` 被 pwsh 当成字面字符串                   |
+| 设置环境变量 | `set X=1`           | `$env:X = "1"`                 | pwsh 的 set 是 Set-Variable 别名，完全是另一回事 |
+| 显示历史     | `doskey /history`   | `Get-History`（简写 `h`）    |                                                  |
+
+**为什么 `type nul` 在 PowerShell 会炸：**
+
+- `type` 在 PowerShell 里是 `Get-Content` 的**别名**，作用是"读文件"而非"写文件"
+- CMD 里的 `nul` 是一个特殊"黑洞设备"；PowerShell 没这个概念，把它当普通文件名去找 → "找不到路径"
+
+类比：CMD 和 PowerShell 是两个方言区，"黑洞街 nul 号"这个地址只在 CMD 城市存在，PowerShell 的快递员（Get-Content）按字面去找，当然扑空。
 
 ## 🧭 文件与目录操作（先背熟）
 
@@ -18,10 +40,10 @@
 | 查看目录内容 | `dir`                          | `ls`（`ls -la` 看隐藏文件+详情）         |
 | 进入文件夹   | `cd 文件夹名`                  | 相同                                         |
 | 返回上级目录 | `cd ..`                        | 相同                                         |
-| 返回主目录   | `cd %USERPROFILE%`             | `cd ~`                                     |
+| 返回主目录   | CMD：`cd %USERPROFILE%` / pwsh：`cd $env:USERPROFILE` | `cd ~`                                     |
 | 显示当前路径 | `pwd`                          | `pwd`                                      |
 | 创建文件夹   | `mkdir 文件夹名`               | `mkdir 文件夹名`（`-p a/b/c` 递归）      |
-| 创建空文件   | `type nul > 文件名`            | `touch 文件名`                             |
+| 创建空文件   | CMD：`type nul > 文件名` / pwsh：`New-Item 文件名` | `touch 文件名`                             |
 | 复制文件     | `copy 源 目标`                 | `cp 源 目标`（`-r` 递归复制文件夹）      |
 | 复制文件夹   | `xcopy 源 目标 /E`             | `cp -r 源 目标`                            |
 | 移动/重命名  | `move 源 目标`                 | `mv 源 目标`                               |
@@ -46,7 +68,7 @@
 
 | 用途     | CMD / pwsh                                      | bash / WSL               |
 | -------- | ----------------------------------------------- | ------------------------ |
-| 环境变量 | `set` / `echo %PATH%`                       | `env` / `echo $PATH` |
+| 环境变量 | CMD：`set` / `echo %PATH%` / pwsh：`$env:PATH` | `env` / `echo $PATH` |
 | 当前用户 | `whoami`                                      | `whoami`               |
 | 主机名   | `hostname`                                    | `hostname`             |
 | 系统信息 | `systeminfo`                                  | `uname -a`             |

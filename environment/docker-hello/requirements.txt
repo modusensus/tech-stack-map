@@ -1,0 +1,2 @@
+# 第三方依赖清单：Dockerfile 里的 pip install -r 会照单采购
+requests

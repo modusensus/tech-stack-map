@@ -153,10 +153,10 @@ Dockerfile（菜谱：一步步说明怎么搭环境）
 
 **docker 命令只是"遥控器"，干活的是"机器人本体"：**
 
-| 角色                     | 是什么                                         | 装在哪                                  |
-| ------------------------ | ---------------------------------------------- | --------------------------------------- |
-| **docker CLI**（命令行） | 遥控器：只把命令**发送**出去                   | PowerShell / WSL 终端（哪都能装）       |
-| **Docker Engine**        | 机器人本体：真正拉镜像、跑容器的后台守护进程   | **必须跑在 Linux**（WSL2/Hyper-V 虚拟机） |
+| 角色                           | 是什么                                       | 装在哪                                          |
+| ------------------------------ | -------------------------------------------- | ----------------------------------------------- |
+| **docker CLI**（命令行） | 遥控器：只把命令**发送**出去           | PowerShell / WSL 终端（哪都能装）               |
+| **Docker Engine**        | 机器人本体：真正拉镜像、跑容器的后台守护进程 | **必须跑在 Linux**（WSL2/Hyper-V 虚拟机） |
 
 ```
 PowerShell 敲 docker compose up（部署 Dify 时）
@@ -398,18 +398,18 @@ CMD ["python", "app.py"]
 
 **指令速查表（构建时 vs 启动时是分水岭）：**
 
-| 指令          | 什么时候执行 | 作用                                                     |
-| ------------- | ------------ | -------------------------------------------------------- |
-| `FROM`      | 构建时       | 指定基础镜像（"地基"）                                   |
-| `WORKDIR`   | 构建时       | 设定容器里的默认工作目录                                 |
-| `COPY`      | 构建时       | 把宿主机文件复制进镜像                                   |
-| `ADD`       | 构建时       | COPY 超集：能自动解压 tar、能拉 URL（日常用 COPY 就够）  |
-| `RUN`       | 构建时       | 构建过程中执行命令（最常见：装依赖）                     |
-| `ENV`       | 构建 + 运行  | 设置**持久**环境变量（构建时能读，容器跑起来还在）       |
-| `ARG`       | 仅构建时     | 只在构建阶段有效的变量（`docker build --build-arg` 传入）|
-| `EXPOSE`    | 构建时       | **声明**容器监听的端口（纯文档性质，真正映射靠 `-p`）    |
-| `ENTRYPOINT`| **启动时**   | 容器的"主命令"，不容易被覆盖                             |
-| `CMD`       | **启动时**   | 默认命令，容易被 `docker run` 后面的参数**覆盖**         |
+| 指令           | 什么时候执行     | 作用                                                          |
+| -------------- | ---------------- | ------------------------------------------------------------- |
+| `FROM`       | 构建时           | 指定基础镜像（"地基"）                                        |
+| `WORKDIR`    | 构建时           | 设定容器里的默认工作目录                                      |
+| `COPY`       | 构建时           | 把宿主机文件复制进镜像                                        |
+| `ADD`        | 构建时           | COPY 超集：能自动解压 tar、能拉 URL（日常用 COPY 就够）       |
+| `RUN`        | 构建时           | 构建过程中执行命令（最常见：装依赖）                          |
+| `ENV`        | 构建 + 运行      | 设置**持久**环境变量（构建时能读，容器跑起来还在）      |
+| `ARG`        | 仅构建时         | 只在构建阶段有效的变量（`docker build --build-arg` 传入）   |
+| `EXPOSE`     | 构建时           | **声明**容器监听的端口（纯文档性质，真正映射靠 `-p`） |
+| `ENTRYPOINT` | **启动时** | 容器的"主命令"，不容易被覆盖                                  |
+| `CMD`        | **启动时** | 默认命令，容易被`docker run` 后面的参数**覆盖**       |
 
 **ENTRYPOINT vs CMD（易混点）：**
 
@@ -438,15 +438,89 @@ docker build -t <镜像名>:<tag> .
 docker run hello-docker          # 注意：run 只自动 pull，不自动 build
 ```
 
-**推送镜像到 Docker Hub（让全世界都能 pull 你的镜像）：**
+**推送镜像到 Docker Hub（让全世界都能 pull 你的镜像）——✅ 2026-09-13 实操通过：**
 
 ```bash
-docker login                              # 先登录（会提示输用户名密码）
-docker build -t <用户名>/<镜像名>:<tag> . # 镜像名必须带上你的用户名，不然 push 不上去
-docker push <用户名>/<镜像名>:<tag>       # 推送
+docker login                              # 第 1 步：登录（提示输用户名密码 / 浏览器授权）
+docker tag hello-docker guanqishi/hello-docker   # 第 2 步：给已有镜像贴"带用户名的第二块名牌"
+docker push guanqishi/hello-docker        # 第 3 步：推送（分层上传，Hub 里已有的层秒传）
+docker run guanqishi/hello-docker         # 验证：任何人一条命令就能跑
 ```
 
+> 我用的账号：`guanqishi`（显示名 Modusensus）。镜像地址：https://hub.docker.com/r/guanqishi/hello-docker
+
+**三个实操细节：**
+
+- `docker tag` 不是复制镜像，只是给**同一个镜像**多贴一块名牌（`docker images` 里两个名字同一个 IMAGE ID）——零额外空间
+- push 结尾的 `digest: sha256:debdee...` 和本地 build 输出里的 `exporting manifest list sha256:debdee...` **一致**——digest 是镜像内容指纹，证明本地造的和推上去的同一个字节不差
+- push 那十行 `Pushed` 是**分层上传**：Hub 上早就有的层（如 alpine 地基）秒传，只有你的独有层真上传——分层存储在服务端同样生效
+
+**镜像名必须带用户名前缀**（`用户名/镜像名`），否则 push 不知道往谁家仓库推。
+
 > ✅ 2026-08-29 网课看完，已整理填充。
+
+### 3.4 依赖管理：requirements.txt 与 pip（2026-09-13 实操补记）
+
+**pip = Python 的快递采购员**
+
+Python 世界有个超大商场叫 **PyPI**（Python Package Index），几十万个现成包摆在里面。pip 就是帮你采购的快递员：
+
+```powershell
+pip install requests     # "快递员，帮我买 requests 送到我家"
+pip list                 # "看看我家里都有哪些包"
+pip uninstall requests   # "这个不要了，退回去"
+```
+
+如果你会 npm/pnpm，这套你已经会了：
+
+| | Node.js 世界 | Python 世界 |
+| --- | --- | --- |
+| 商场 | npm 仓库 | PyPI |
+| 采购命令 | `npm install` | `pip install` |
+| 购物清单 | `package.json` | `requirements.txt` |
+| 查已装包 | `npm list` | `pip list` |
+
+**requirements.txt = 购物清单（写给别的电脑看的便签）**
+
+没有任何魔法，就是个普通文本文件。解决的问题：你的代码 `import requests`，但别的电脑上没装 → 报 `No module named 'requests'`。于是把要装的东西写进文件、跟代码放一起，对方照着装一个不漏。
+
+```text
+# 这是注释，写给人看的
+requests            # 最简：只写名字，pip 装最新版
+requests==2.31.0    # 精确版本：生产环境用（防止新版本改了 API 半夜崩）
+requests>=2.31.0    # 底线版本：至少这么新
+```
+
+**Dockerfile 里的 `-r` 就是"照单念"：**
+
+```dockerfile
+RUN pip install -r requirements.txt
+#     ↑     ↑   ↑  ↑              ↑
+# 构建时  采购  read  照这张清单    清单文件名
+```
+
+**关键领悟：清单和流程是分离的。** 加一个包只改 requirements.txt，Dockerfile 一个字不用动（重新 build 就跑一遍流程）；清单变，流程不变。反例是"当场点名"野路子：`RUN pip install requests` 写死在 Dockerfile——每加一个包就改 Dockerfile，越改越长。
+
+**标准库 vs 第三方包（买房自带家具 vs 商场采购）：**
+
+| 类型 | 类比 | 例子 | 要 pip install 吗 |
+| --- | --- | --- | --- |
+| 标准库 | 买房自带的家具 | `time`、`datetime`、`os`、`json` | 不用，Python 自带 |
+| 第三方包 | 得去商场买的家具 | `requests`、`pandas`、`numpy` | 要，写进清单 |
+
+判断法：从没装过却能直接 `import` → 标准库；当年跟着教程 `pip install` 过的 → 第三方包。
+
+**pip freeze 的坑（专业姿势但要小心）：**
+
+```powershell
+pip freeze > requirements.txt   # 把当前环境所有包连版本号全倒进清单
+```
+
+它分不清"项目真需要的"和"顺手装过的"，会把八竿子打不着的包也写进去。适合"打包现成的虚拟环境"，手写适合"从零明确依赖"。
+
+**requests = 让 Python 伸向互联网的手**
+
+`requests.get("https://api.github.com")` 就是让代码像浏览器一样发 **HTTP 请求**（"喂，这个网址，把内容发给我"）。它等于 n8n 里那个 **HTTP Request 节点**的代码版。毕设要拿数据分析城市湿地公园，数据很多来自开放 API——第一步往往就是它。
 
 ---
 
@@ -514,14 +588,14 @@ docker run -d --name <容器名> -p 宿主机端口:容器端口 -v 宿主机路
 
 **网课回忆成果（2026-08-29）：**
 
-| 参数      | 作用                             | 说明 / 例子                                        |
-| --------- | -------------------------------- | -------------------------------------------------- |
-| `-e`      | 往容器里**传环境变量**           | `-e MONGO_INITDB_ROOT_USERNAME=admin`              |
-| `--name`  | 给容器起名                       | 容器名**不能重复**，撞名直接报错                   |
-| `-it`     | 交互模式：把控制台"伸进"容器里   | 和 `--rm` 连用是临时调试神器                       |
-| `--rm`    | 容器**一停止就自动删除**         | `docker run -it --rm <镜像>` 用完即走，不留垃圾    |
-| `--restart always` | 容器一停就自动拉起      | 内部崩溃、宿主机断电重启，全都给你拉起来           |
-| `--restart unless-stopped` | 同上，但手动 stop 的不拉起 | 我亲手停的就让它装死，其他情况照常复活      |
+| 参数                         | 作用                           | 说明 / 例子                                       |
+| ---------------------------- | ------------------------------ | ------------------------------------------------- |
+| `-e`                       | 往容器里**传环境变量**   | `-e MONGO_INITDB_ROOT_USERNAME=admin`           |
+| `--name`                   | 给容器起名                     | 容器名**不能重复**，撞名直接报错            |
+| `-it`                      | 交互模式：把控制台"伸进"容器里 | 和`--rm` 连用是临时调试神器                     |
+| `--rm`                     | 容器**一停止就自动删除** | `docker run -it --rm <镜像>` 用完即走，不留垃圾 |
+| `--restart always`         | 容器一停就自动拉起             | 内部崩溃、宿主机断电重启，全都给你拉起来          |
+| `--restart unless-stopped` | 同上，但手动 stop 的不拉起     | 我亲手停的就让它装死，其他情况照常复活            |
 
 **`--restart always` vs `unless-stopped` 一句话：** `always` 死都要活；`unless-stopped` 我亲手按停的它就乖乖装死。
 
@@ -543,10 +617,10 @@ docker run [一堆选项] <镜像名> [传给容器内部的命令]
 
 "重启 Docker"其实有两层，命令完全不同：
 
-| 层级 | 是什么 | 命令 | 什么时候用 |
-|------|--------|------|-----------|
-| **重启容器** | 重启某一台"虚拟电脑" | `docker restart <容器名>` | 改了配置、容器抽风，最常用 |
-| **重启 Docker 引擎** | 重启整个"发动机"（Engine） | 见下表 | 改了 daemon.json、引擎本身出问题 |
+| 层级                       | 是什么                     | 命令                        | 什么时候用                       |
+| -------------------------- | -------------------------- | --------------------------- | -------------------------------- |
+| **重启容器**         | 重启某一台"虚拟电脑"       | `docker restart <容器名>` | 改了配置、容器抽风，最常用       |
+| **重启 Docker 引擎** | 重启整个"发动机"（Engine） | 见下表                      | 改了 daemon.json、引擎本身出问题 |
 
 **重启 Docker 引擎的命令（按系统分）：**
 
@@ -590,18 +664,50 @@ docker inspect <容器名>
 
 **读 `docker ps -a` 的 STATUS 列：**
 
-| 状态             | 含义                     | 下一步                    |
-| ---------------- | ------------------------ | ------------------------- |
-| `Up x minutes` | 正在运行                 | 直接用                    |
-| `Exited (0)`   | 正常退出（0 = 没报错）   | 不用 stop，直接 `rm`    |
-| `Exited (非0)` | 异常退出（有错误发生）   | `docker logs` 查死因    |
-| `Restarting`   | 反复崩溃重启中           | `docker logs` 查死因    |
+| 状态             | 含义                   | 下一步                 |
+| ---------------- | ---------------------- | ---------------------- |
+| `Up x minutes` | 正在运行               | 直接用                 |
+| `Exited (0)`   | 正常退出（0 = 没报错） | 不用 stop，直接`rm`  |
+| `Exited (非0)` | 异常退出（有错误发生） | `docker logs` 查死因 |
+| `Restarting`   | 反复崩溃重启中         | `docker logs` 查死因 |
 
-🔲 **回忆清单（网课的调试章节还讲了什么）：**
+**三个"体检"命令：top / stats / diff（都只读观察，不动容器一根汗毛）**
 
-- `docker top <容器>`（看容器里的进程？）
-- `docker stats`（实时资源占用？）
-- `docker diff`（容器文件系统改了什么？）
+```bash
+# 看容器里正在跑的进程（站在容器外面看，不用 exec 钻进去）
+docker top <容器名或ID>
+# 和 docker exec <容器> ps -ef 结果类似，但优点：容器里哪怕没装 ps 命令也能看
+# 类比：exec ps -ef 是"开门进屋数人头"，docker top 是"隔着玻璃数人头"
+
+# 实时监控所有容器的资源占用（CPU / 内存 / 网络读写 / 磁盘读写）
+docker stats
+# 像 Linux 的 top：默认几秒刷新一次，Ctrl+C 只是退出"看"，容器不受影响
+# 只盯一个容器：docker stats <容器名>      只看一眼不滚动：加 --no-stream
+# 默认只显示"运行中"的容器（停了的没人监护，很合理）
+
+# 查看容器相对于镜像，文件系统被改过哪些地方
+docker diff <容器名或ID>
+# 输出每行 = 一个字母 + 文件路径，只有三种字母：
+#   A = Added   新增的文件
+#   C = Changed 修改过的文件
+#   D = Deleted 删除的文件
+```
+
+**调试体检四件套（top / stats / diff / inspect）：**
+
+| 命令               | 回答的问题                 | 类比                     |
+| ------------------ | -------------------------- | ------------------------ |
+| `docker top`     | 容器里都有谁（进程）在跑？ | 隔着玻璃数人头           |
+| `docker stats`   | 容器吃掉多少 CPU / 内存？  | 心电监护仪（实时跳动）   |
+| `docker diff`    | 容器里动过哪些文件？       | 搬家前后对比照           |
+| `docker inspect` | 当初用什么参数启动的？     | 档案袋（静态配置全记录） |
+
+**diff 顺出的大重点（通往第 5 章数据卷）：**
+
+- 镜像是**只读的**（第 1 章说过：母盘）；容器一启动，Docker 在上面盖一层**可写层**--想象一张描图纸
+- 你在容器里增/删/改的所有文件，全写在这层描图纸上，`docker diff` 看到的就是它
+- `docker rm` 删容器 = 连描图纸一起扔掉，改动**灰飞烟灭**
+- 结论：容器天生"什么都记不住"，重要数据必须挂卷（这正是第 5 章存在的意义）
 
 ---
 
@@ -609,11 +715,11 @@ docker inspect <容器名>
 
 ### 5.1 三种挂载方式对照（绑定 / 命名 / 匿名）
 
-| 类型     | 写法                          | 左边是什么 | 数据存哪                                        |
-| -------- | ----------------------------- | ---------- | ----------------------------------------------- |
-| 绑定挂载 | `-v /宿主机路径:/容器路径`    | 真实路径   | 我指定的文件夹（自己管）                        |
-| 命名卷   | `-v 卷名:/容器路径`           | 一个名字   | Docker 统一保管（`/var/lib/docker/volumes/`）   |
-| 匿名卷   | `-v /容器路径`（只写右边）    | 没有左边   | Docker 随机起名保管（难管理，不推荐）           |
+| 类型     | 写法                         | 左边是什么 | 数据存哪                                        |
+| -------- | ---------------------------- | ---------- | ----------------------------------------------- |
+| 绑定挂载 | `-v /宿主机路径:/容器路径` | 真实路径   | 我指定的文件夹（自己管）                        |
+| 命名卷   | `-v 卷名:/容器路径`        | 一个名字   | Docker 统一保管（`/var/lib/docker/volumes/`） |
+| 匿名卷   | `-v /容器路径`（只写右边） | 没有左边   | Docker 随机起名保管（难管理，不推荐）           |
 
 > 术语备忘：命名卷 = 具名卷 = named volume，同一个东西（翻译差异）
 >
@@ -623,11 +729,11 @@ docker inspect <容器名>
 
 **绑定挂载（-v 宿主机路径:容器路径）= 用海报盖住墙上的画：**
 
-| 宿主机文件状态 | 容器里看到什么       | 容器原内容丢了吗               |
-| -------------- | -------------------- | ------------------------------ |
-| 有内容         | 宿主机的版本         | 没丢，被盖住                   |
-| 空文件         | 空（nginx 白屏/403） | 没丢，被盖住                   |
-| ⚠️ 路径不存在   | Docker **不报错**，自动创建**空目录**挂上去 | 没丢，被盖住 |
+| 宿主机文件状态  | 容器里看到什么                                         | 容器原内容丢了吗 |
+| --------------- | ------------------------------------------------------ | ---------------- |
+| 有内容          | 宿主机的版本                                           | 没丢，被盖住     |
+| 空文件          | 空（nginx 白屏/403）                                   | 没丢，被盖住     |
+| ⚠️ 路径不存在 | Docker**不报错**，自动创建**空目录**挂上去 | 没丢，被盖住     |
 
 - 宿主机内容**盖住**容器路径；原内容还在镜像图层里躺着，取消挂载就回来
 - **经典陷阱**：宿主机路径拼错 → Docker 悄悄建空目录 → 容器内容"神秘消失"。挂载后内容变空，先查宿主机路径
@@ -704,10 +810,10 @@ docker run -d --name my-web -p 8080:80 \
 
 **⚠️ 左右两边的自由度完全不同：**
 
-|              | 左边（宿主机端口）               | 右边（容器端口）             |
-| ------------ | -------------------------------- | ---------------------------- |
-| 能随便写吗   | ✅ 基本随便（1024+ 没被占即可）  | ❌ 必须是服务实际监听的端口  |
-| 原因         | 前台总机号码随我定               | nginx 出生就守在 80，写别的没人接 |
+|            | 左边（宿主机端口）              | 右边（容器端口）                  |
+| ---------- | ------------------------------- | --------------------------------- |
+| 能随便写吗 | ✅ 基本随便（1024+ 没被占即可） | ❌ 必须是服务实际监听的端口       |
+| 原因       | 前台总机号码随我定              | nginx 出生就守在 80，写别的没人接 |
 
 **实战：** `-p 1234:80 nginx` → 浏览器访问 `http://localhost:1234` ✅
 
@@ -715,11 +821,11 @@ docker run -d --name my-web -p 8080:80 \
 
 三种"谁能访问我"的关卡（由近到远）：
 
-| 谁访问谁                     | 走哪条路           | 要过什么关卡                                            |
-| ---------------------------- | ------------------ | ------------------------------------------------------- |
-| 自己访问自己（localhost）    | 回环接口，不出网卡 | **不过任何关卡，直接通** ✅                             |
-| 局域网设备（手机访问我电脑） | 从"家门"进来       | 本机防火墙（Windows Defender / Linux 的 ufw）           |
-| 外网访问云服务器             | 进"机房大楼"       | **云安全组**（大楼保安）+ 机器自身防火墙（家里门锁）    |
+| 谁访问谁                     | 走哪条路           | 要过什么关卡                                               |
+| ---------------------------- | ------------------ | ---------------------------------------------------------- |
+| 自己访问自己（localhost）    | 回环接口，不出网卡 | **不过任何关卡，直接通** ✅                          |
+| 局域网设备（手机访问我电脑） | 从"家门"进来       | 本机防火墙（Windows Defender / Linux 的 ufw）              |
+| 外网访问云服务器             | 进"机房大楼"       | **云安全组**（大楼保安）+ 机器自身防火墙（家里门锁） |
 
 - `localhost` / `127.0.0.1` = 回环地址：数据包在电脑内部转一圈就回来，根本不出网卡 → 防火墙和安全组都管不着，本地练 Docker 不用配任何入站规则
 - 安全组在机器**外面**（云厂商设的），本机防火墙在机器**里面**，两道关都可能拦人；想让手机访问电脑服务时，才需要放行本机防火墙入站规则
@@ -734,11 +840,11 @@ docker run -d --name my-web -p 8080:80 \
 
 **三种网络模式（网课回忆整理 2026-08-29）：**
 
-| 模式             | 特点                                                            | 类比                     |
-| ---------------- | --------------------------------------------------------------- | ------------------------ |
-| `bridge`（默认） | Docker 建虚拟网桥，每个容器一块虚拟网卡、分到独立内网 IP，出网靠 NAT | 大楼公共走廊，每间房有门牌 |
-| `host`           | 容器**直接共用宿主机的网络栈**：没有独立 IP，监听的端口就是宿主机端口（不需要也不能用 `-p`） | 直接住进大楼前台 |
-| `none`           | 不配任何网络，完全断网                                          | 关小黑屋                 |
+| 模式               | 特点                                                                                                 | 类比                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------- | -------------------------- |
+| `bridge`（默认） | Docker 建虚拟网桥，每个容器一块虚拟网卡、分到独立内网 IP，出网靠 NAT                                 | 大楼公共走廊，每间房有门牌 |
+| `host`           | 容器**直接共用宿主机的网络栈**：没有独立 IP，监听的端口就是宿主机端口（不需要也不能用 `-p`） | 直接住进大楼前台           |
+| `none`           | 不配任何网络，完全断网                                                                               | 关小黑屋                   |
 
 **docker network 命令家族（和 volume 家族一个套路）：**
 
@@ -753,11 +859,11 @@ docker network disconnect <网络名> <容器> # 退群
 
 **自定义 bridge vs 默认 bridge（为什么服务名互访需要自定义网络）：**
 
-|                | 默认 bridge（docker0）       | 自定义 bridge                |
-| -------------- | ---------------------------- | ---------------------------- |
-| 容器互访       | 只能靠 IP 地址               | **容器名就是域名**，直接拨   |
-| DNS 自动解析   | ❌ 没有                       | ✅ 自动配好                   |
-| 隔离性         | 所有容器挤一个大群           | 一个项目一个群，互不干扰     |
+|              | 默认 bridge（docker0） | 自定义 bridge                    |
+| ------------ | ---------------------- | -------------------------------- |
+| 容器互访     | 只能靠 IP 地址         | **容器名就是域名**，直接拨 |
+| DNS 自动解析 | ❌ 没有                | ✅ 自动配好                      |
+| 隔离性       | 所有容器挤一个大群     | 一个项目一个群，互不干扰         |
 
 - compose 的"内线电话"（服务名互访）就是靠自动创建的自定义 bridge 网络实现的
 - `--link` 是老古董：compose 普及之前容器互联的老办法，官方已不推荐，知道有这个东西就行
@@ -812,11 +918,11 @@ docker compose ps          # 全部 Up 才算成功
 
 ### 7.4 单兵 vs 舰队：怎么判断新应用怎么部署
 
-| 应用      | 部署方式              | 为什么                                         |
-| --------- | --------------------- | ---------------------------------------------- |
-| n8n       | 🎉 单容器（docker run） | 自带 SQLite 数据库，一个人就是一支队伍          |
-| Dify      | 舰队（docker compose）  | API + Worker + 数据库 + Redis + nginx……         |
-| RAGFlow   | 舰队（docker compose）  | 检索引擎 + MySQL + MinIO + Redis……              |
+| 应用    | 部署方式                | 为什么                                    |
+| ------- | ----------------------- | ----------------------------------------- |
+| n8n     | 🎉 单容器（docker run） | 自带 SQLite 数据库，一个人就是一支队伍    |
+| Dify    | 舰队（docker compose）  | API + Worker + 数据库 + Redis + nginx…… |
+| RAGFlow | 舰队（docker compose）  | 检索引擎 + MySQL + MinIO + Redis……      |
 
 **两个快速判断信号：**
 
@@ -860,15 +966,15 @@ volumes:                      # 顶层 volumes 段：声明命名卷（compose �
 
 **run 参数 → yaml 字段对照表：**
 
-| docker run 参数     | yaml 写法                 |
-| ------------------- | ------------------------- |
-| `<镜像名>`          | `image:`                  |
-| `-e KEY=VAL`        | `environment:`            |
-| `-p 宿:容`          | `ports:`                  |
-| `-v 卷:路径`        | `volumes:`（卷在顶层声明）|
-| `--restart always`  | `restart: always`         |
-| `--name`            | `container_name:`         |
-| （本地构建）        | `build: .`（用 Dockerfile 现场做，和 `image:` 二选一：image 直接拉现成的，build 本地构建） |
+| docker run 参数      | yaml 写法                                                                                      |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `<镜像名>`         | `image:`                                                                                     |
+| `-e KEY=VAL`       | `environment:`                                                                               |
+| `-p 宿:容`         | `ports:`                                                                                     |
+| `-v 卷:路径`       | `volumes:`（卷在顶层声明）                                                                   |
+| `--restart always` | `restart: always`                                                                            |
+| `--name`           | `container_name:`                                                                            |
+| （本地构建）         | `build: .`（用 Dockerfile 现场做，和 `image:` 二选一：image 直接拉现成的，build 本地构建） |
 
 **compose 的网络与启动顺序：**
 
@@ -884,12 +990,12 @@ services:
 
 **up / stop / start / down 家族（谁动谁不动）：**
 
-| 命令                 | 容器            | 网络 | 数据卷 |
-| -------------------- | --------------- | ---- | ------ |
-| `docker compose up -d`   | 创建并启动  | 创建 | 保留   |
-| `docker compose stop`    | 只停止      | 保留 | 保留   |
-| `docker compose start`   | 启动已停的  | 保留 | 保留   |
-| `docker compose down`    | 停止**并删除** | 删除 | 保留 |
+| 命令                     | 容器                 | 网络 | 数据卷 |
+| ------------------------ | -------------------- | ---- | ------ |
+| `docker compose up -d` | 创建并启动           | 创建 | 保留   |
+| `docker compose stop`  | 只停止               | 保留 | 保留   |
+| `docker compose start` | 启动已停的           | 保留 | 保留   |
+| `docker compose down`  | 停止**并删除** | 删除 | 保留   |
 
 **-f 指定文件名（yaml 不叫"标准名"时的指路牌）：**
 
@@ -905,9 +1011,9 @@ docker compose -f mongo-compose.yaml up -d
 
 ## 第 8 章 实战项目
 
-- [x] 项目一：用 Docker 跑起 nginx（2026-08-29）✅
-- [ ] 项目二：海报盖画——挂载换掉 nginx 默认首页
-- [ ] 项目三：第一个自制镜像 hello-docker
+- [X] 项目一：用 Docker 跑起 nginx（2026-08-29）✅
+- [X] 项目二：海报盖画——挂载换掉 nginx 默认首页（2026-09-13）✅
+- [X] 项目三：第一个自制镜像 hello-docker（2026-09-13）✅
 
 ### 项目一：跑起 nginx 网页服务器 ✅
 
@@ -943,50 +1049,127 @@ docker rm my-nginx     # 删除
 
 **一句话记忆：** `-d` 后台、`--name` 起名、`-p 左:右` 端口、最后是镜像。
 
-### 项目二：海报盖画——挂载换掉 nginx 首页 🔲
+### 项目二：海报盖画——挂载换掉 nginx 首页 ✅
+
+> 2026-09-13 完成（顺便第一次接触 HTML，踩了中文乱码坑，已解决并记录）。
+
+**核心比喻：** nginx 镜像自带一张"画"（欢迎页），`-v` 挂载把你的文件夹当"海报"盖上去——海报遮住画。撕掉海报（删容器不挂载），画原样还在：**画从没被删，只是被盖住**。
 
 **步骤：**
 
 ```powershell
-# 1. 建文件夹写页面（PowerShell 写法；type nul 是 CMD 方言，别用）
+# 1. 建文件夹 + 写"海报"（⚠️ 中文内容别用 PowerShell > 重定向写，见编码坑）
 mkdir D:\mysite
-"<h1>我的 B 页面：海报盖画成功！</h1>" > D:\mysite\index.html
+# 用编辑器（VSCode/Trae）创建 D:\mysite\index.html，保存为 UTF-8，内容带 meta charset
 
 # 2. 挂载运行（左边是我电脑的路径，右边是容器内 nginx 首页路径）
-docker run -d --name my-web -p 8081:80 -v D:\mysite:/usr/share/nginx/html nginx
+#    一条命令同时干三件事：造容器 + 启动 nginx + 盖海报（不用先手动启动 nginx！）
+docker run -d --name my-web -p 8081:80 -v D:/mysite:/usr/share/nginx/html nginx
 ```
 
-3. 浏览器开 `http://localhost:8081` → 应该看到 B 页面（不是 nginx 欢迎页）
-4. 改 `index.html` 文字 → 保存 → 刷新浏览器就变（验证"两边是同一个文件"）
-5. `stop` + `rm` 后裸跑一个 nginx → 欢迎页原样还在（验证"画没被删，只是被盖住"）
+3. 浏览器开 `http://localhost:8081` → 看到自己的 B 页面（不是 nginx 欢迎页）
+4. 改 `index.html` 文字 → 保存 → **刷新浏览器就变**（不用碰容器——验证"两边是同一个文件"）
+5. ✅ 撕海报验证（2026-09-13 实测通过）：`stop` + `rm` my-web 后裸跑 `docker run -d --name bare-nginx -p 8082:80 nginx` → 8082 页面欢迎页原样还在——**画没被删，只是被盖住；数据写在挂载里，不是容器里**
 
-### 项目三：第一个自制镜像 hello-docker 🔲
+**HTML 最小骨架（够用版）：**
 
-**步骤：**
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">   <!-- 必须！告诉浏览器"我用 UTF-8 密码本" -->
+  <title>我的 B 页面</title>
+</head>
+<body>
+  <h1>我的 B 页面：海报盖画成功！</h1>
+</body>
+</html>
+```
 
-1. 建文件夹 `docker-hello`，写两个文件：`app.py`（打印问候+当前时间）+ `Dockerfile`
-2. Dockerfile 四件套：`FROM python:3.10` → `WORKDIR /app` → `COPY . .` → `CMD ["python", "app.py"]`
-3. 构建运行：
+**编码坑（详见第 9 章）：** 文件实际是 UTF-8，但 HTML 没写 `<meta charset>` → 中文 Windows 浏览器默认按 GBK 猜 → 乱码成"鎴戠殑"。加一行声明即可；写中文文件优先用编辑器（UTF-8），别用 PowerShell `>` 重定向（PowerShell 5 默认写 UTF-16）。
+
+### 项目三：第一个自制镜像 hello-docker ✅
+
+> 2026-09-13 完成。第一次 build 失败（站错目录），修正后一次通过。
+
+**最终三个文件（在 `environment/docker-hello/`）：**
+
+`app.py`——用到第三方包 requests 当"验货员"（能打印版本号 = pip 采购真到货了）：
+
+```python
+import time       # 标准库：买房自带的家具，不用采购
+import requests   # 第三方包：清单里采购的，打印版本号 = 开箱验货
+
+now = time.ctime()  # 拿到"现在时间"（一个字符串）
+
+print("Hello, Docker!", now)                   # 问候语 + 时间
+print("requests 版本：", requests.__version__) # 能打印 = pip 真的到货了
+```
+
+`requirements.txt`——购物清单（和代码里的 import 一一对应）：
+
+```
+# 第三方依赖清单：Dockerfile 里的 pip install -r 会照单采购
+requests
+```
+
+`Dockerfile`——标准版：依赖在前（缓存命中率高），代码在后（天天改只重跑一层）：
+
+```dockerfile
+FROM python:3.11-alpine
+
+WORKDIR /app
+
+# 依赖层在前：requirements.txt 很少改，这层缓存一直命中，pip 不会重复装
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# 代码层在后：app.py 天天改，也只重跑这一层
+COPY app.py .
+
+CMD ["python", "app.py"]
+```
+
+**构建 + 运行（必须先 cd 进 docker-hello 目录，`.` 才指对地方）：**
 
 ```bash
-docker build -t hello-docker .   # 构建：-t 起名，. 用当前目录的 Dockerfile
-docker run hello-docker          # 运行：看到问候语和时间就成功
-docker ps -a                     # 容器打印完就 Exited (0)，记得 rm 收尾
+docker build -t hello-docker .
+docker run hello-docker          # 成功输出：Hello, Docker! <时间> + requests 版本
+docker ps -a                     # 状态 Exited (0) = 打印完善终（0 是正常退场）
 ```
 
-**观察题：** 宿主机根本没装 Python 3.10，容器里的 Python 哪来的？（答：`FROM` 的地基镜像自带）
+**分层缓存现场验证（连跑两次 build）：**
+
+```bash
+docker build -t hello-docker .   # 第一次：pip 层 14.7s 真下载
+docker build -t hello-docker .   # 第二次：全程 CACHED，2.3s 结束——分层缓存眼见为实
+```
+
+**观察题答案：** 容器里的 Python 哪来的？——`FROM` 的地基镜像自带（python:3.11-alpine），宿主机 conda 的 Python 全程没参与。这就是"环境跟着镜像走"。
+
+**延伸思考（和毕设的关系）：** 将来给数据分析项目写 Dockerfile，就是把 `requests` 换成 `pandas` + `numpy`，加进 requirements.txt 而已——流程一模一样。
+
+**最终章：镜像已推送 Docker Hub**（2026-09-13）——`guanqishi/hello-docker`，任何人 `docker run guanqishi/hello-docker` 即可运行。完整交付链：写代码 → Dockerfile → build → tag → push → 从 Hub 拉取运行 ✅
 
 ---
 
 ## 第 9 章 踩坑记录
 
-| 日期       | 错误                                                         | 原因                                                         | 解决                                                         |
-| ---------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 2026-08-29 | `docker stop nginx` → `No such container: nginx`              | 把**镜像名**当成了**容器名**。stop/rm 后面要填容器名（NAMES 列），不是镜像名（IMAGE 列） | 用容器名操作；以后 `docker run --name xxx` 自己起名          |
-| 2026-08-29 | `Exited (0)` 的容器却去 `docker stop`                         | 没看 STATUS 列：`Exited (0)` = 已经自己退出了（0 = 正常）    | 已退出的容器用 `docker rm` 删除；`stop` 只对 `Up` 的有意义    |
-| 2026-08-29 | `docker run dify -d name my-dify -p 1234:80` → `这镜像不在白名单` | ① **dify 不是镜像名**——要用 compose 拉起；② 选项写在镜像名后面（顺序错）；③ `name` 少一个横杠 | 在 `dify/docker` 目录：`cp .env.example .env` → `docker compose up -d`；选项全写镜像名左边 |
-| 2026-08-29 | 拉镜像报 `这镜像不在白名单 (not in the allowlist)`            | DaoCloud 镜像源开了白名单模式，只代下载名单内的镜像          | 换一个镜像源（南大/网易等），或接受回源 docker.io            |
-| 2026-08-29 | PowerShell 里 `type nul > index.html` 报错；`touch` 也报错    | `type nul` 是 **CMD** 黑话（nul 是 CMD 的黑洞设备）；PowerShell 里 `type` = `Get-Content`，没有 nul 设备；`touch` 是 **Linux** 的 | PowerShell 创建文件：`"内容" > 文件名` 或 `notepad 文件名`；进 WSL 才能用 touch/vim |
+| 日期       | 错误                                                                   | 原因                                                                                                                                                  | 解决                                                                                             |
+| ---------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| 2026-08-29 | `docker stop nginx` → `No such container: nginx`                  | 把**镜像名**当成了**容器名**。stop/rm 后面要填容器名（NAMES 列），不是镜像名（IMAGE 列）                                                  | 用容器名操作；以后`docker run --name xxx` 自己起名                                             |
+| 2026-08-29 | `Exited (0)` 的容器却去 `docker stop`                              | 没看 STATUS 列：`Exited (0)` = 已经自己退出了（0 = 正常）                                                                                           | 已退出的容器用`docker rm` 删除；`stop` 只对 `Up` 的有意义                                  |
+| 2026-08-29 | `docker run dify -d name my-dify -p 1234:80` → `这镜像不在白名单` | ①**dify 不是镜像名**——要用 compose 拉起；② 选项写在镜像名后面（顺序错）；③ `name` 少一个横杠                                             | 在`dify/docker` 目录：`cp .env.example .env` → `docker compose up -d`；选项全写镜像名左边 |
+| 2026-08-29 | 拉镜像报`这镜像不在白名单 (not in the allowlist)`                    | DaoCloud 镜像源开了白名单模式，只代下载名单内的镜像                                                                                                   | 换一个镜像源（南大/网易等），或接受回源 docker.io                                                |
+| 2026-08-29 | PowerShell 里`type nul > index.html` 报错；`touch` 也报错          | `type nul` 是 **CMD** 黑话（nul 是 CMD 的黑洞设备）；PowerShell 里 `type` = `Get-Content`，没有 nul 设备；`touch` 是 **Linux** 的 | PowerShell 创建文件：`"内容" > 文件名` 或 `notepad 文件名`；进 WSL 才能用 touch/vim          |
+| 2026-09-13 | `docker build` → `failed to read dockerfile: no such file`        | 站错目录：在 `D:\python-study-map` 敲的，Dockerfile 在 `...\docker-hello\`——`.` 指的是"当前文件夹"，去门口翻当然找不到图纸 | 先 `cd` 进 docker-hello 再 build；`.` = 我现在站的地方，永远记住                           |
+| 2026-09-13 | `docker run hello-docker` → `Unable to find image ... 这镜像不在白名单` | **连锁反应**：build 失败了，本地根本没有 hello-docker 镜像 → run 试图去网上下载 → 撞上镜像源白名单。真正病根是上一条 build 失败 | 先修 build 让镜像造出来；白名单报错是"背锅"的，别在它身上浪费功夫                      |
+| 2026-09-13 | `COPY requirements.txt` → 文件不存在                              | Dockerfile 里写了 COPY 这个文件，但文件夹里根本没有它 → 快递面单写了"搬这件家具"，屋里没这件家具 | COPY 之前先确认文件真实存在；名字要一字不差（requi**re**ments 容易手滑）                 |
+| 2026-09-13 | Dockerfile 里 `RUN pip install requests` + 顺序反了              | ①"当场点名"野路子：每加一个包改一次 Dockerfile，清单就失去了意义；②依赖写代码后面：改一行 app.py → 后面依赖全重装 | 统一走 `pip install -r requirements.txt`；先 COPY 依赖文件装依赖，再 COPY 代码（先依赖后代码） |
+| 2026-09-13 | `docker ps -a` 出现一堆没见过的容器（desktop-control-plane 等）  | 那是 **Docker Desktop 自己后台跑的**（kind 集群、镜像代理），不是你造的 | 别去 stop/rm 它们，Docker Desktop 会哭；只认你自己 `--name` 起过名的                 |
+| 2026-09-13 | index.html 中文乱码成"鎴戠殑"天书                          | **编码坑**：文件实际是 UTF-8 存的，但 HTML 没写 `<meta charset="UTF-8">` → 浏览器不知道用哪本"密码本"，按中文 Windows 默认的 GBK 猜 → 解出来全是天书 | HTML 头部加 `<meta charset="UTF-8">` 声明；写中文文件用编辑器存 UTF-8，别用 PowerShell `>` 重定向（PowerShell 5 默认写 UTF-16，换环境又是另一种乱码） |
+| 2026-09-13 | 所有 docker 命令报 `failed to connect to the docker API at npipe:...` | **Docker Desktop 没在运行**——CLI 和引擎之间靠一根"电话线"（npipe 管道）通信，Desktop 掉线 → 电话线不存在 → 命令再对也白搭。报错和你的命令无关 | 启动 Docker Desktop（托盘鲸鱼图标转圈 → Running），`docker ps` 能列出容器 = 电话线通了；再执行原命令 |
+| 2026-09-13 | 终端出现 `>>` 续行符，注释被当成命令                       | 把带 `#` 注释的多段文字整段粘贴进 PowerShell——PowerShell 不认注释里的中文提示，进入等待续行状态 | 粘贴命令前先 Ctrl+C 清掉；只粘贴纯命令行，注释自己心里过一遍就行                     |
 
 > 以后踩了坑，记在这里（同时可以同步到 `notes/errors.md`）。
 
@@ -994,19 +1177,19 @@ docker ps -a                     # 容器打印完就 Exited (0)，记得 rm 收
 
 ## 第 10 章 待办与待补充
 
-**🔲 回忆填充清单（2026-08-29 网课结课）：**
+**回忆填充清单（2026-08-29 网课结课，已全部补全 ✅）：**
 
-- [x] 3.3 Dockerfile 指令全表 + ENTRYPOINT vs CMD + .dockerignore + 分层缓存 + push 流程 ✅
-- [x] 4.3 run 参数：-e / --name / -it / --rm / --restart always vs unless-stopped ✅
-- [x] 5.3 volume 家族补充：prune -a ✅
-- [ ] 4.6 调试命令：docker top / stats / diff（没回忆出来，下次网课回看或实操补）
-- [x] 6.4 容器网络：bridge / host / none + network 命令家族 + 自定义 vs 默认 bridge ✅
-- [x] 7.4 compose yaml 细节：services 结构 / depends_on / build vs image / -f 指定文件 ✅
+- [X] 3.3 Dockerfile 指令全表 + ENTRYPOINT vs CMD + .dockerignore + 分层缓存 + push 流程 ✅
+- [X] 4.3 run 参数：-e / --name / -it / --rm / --restart always vs unless-stopped ✅
+- [X] 5.3 volume 家族补充：prune -a ✅
+- [X] 4.6 调试命令：docker top / stats / diff ✅
+- [X] 6.4 容器网络：bridge / host / none + network 命令家族 + 自定义 vs 默认 bridge ✅
+- [X] 7.4 compose yaml 细节：services 结构 / depends_on / build vs image / -f 指定文件 ✅
 
 **待办：**
 
-- [ ] 项目二：海报盖画练习
-- [ ] 项目三：hello-docker 自制镜像
+- [X] 项目二：海报盖画练习（2026-09-13 完成，含 HTML + 编码坑）✅
+- [X] 项目三：hello-docker 自制镜像（2026-09-13 完成，含 pip / requirements.txt 实操）✅
 - [ ] 踩坑记录同步到 `notes/errors.md`
 
 **下一步方向：** 学完 Docker 后，为毕设的 Python 数据分析项目写 Dockerfile（打包 pandas 环境），把 Docker 和数据分析串起来。

@@ -7,13 +7,13 @@
 
 ## 一、总览（一眼看全）
 
-| 阶段 | 技术栈 | 目标 | 状态 |
-|------|--------|------|------|
-| 阶段一 | Python + SQLite + 数据分析 | 毕业论文数据能力 | `[-]` 进行中 |
-| 阶段二 | 前端三件套 + 设计 | 做出好看网页 | `[ ]` |
-| 阶段三 | 后端 | 前后端串起来 | `[ ]` |
-| 阶段四 | GIS | 地理数据可视化 | `[ ]` |
-| 阶段五 | 自动化 / AI 工具 | 自动化工作流 | `[ ]` 已会用，持续深入 |
+| 阶段   | 技术栈                     | 目标             | 状态                     |
+| ------ | -------------------------- | ---------------- | ------------------------ |
+| 阶段一 | Python + SQLite + 数据分析 | 毕业论文数据能力 | `[-]` 进行中           |
+| 阶段二 | 前端三件套 + 设计          | 做出好看网页     | `[ ]`                  |
+| 阶段三 | 后端                       | 前后端串起来     | `[ ]`                  |
+| 阶段四 | GIS                        | 地理数据可视化   | `[ ]`                  |
+| 阶段五 | 自动化 / AI 工具           | 自动化工作流     | `[ ]` 已会用，持续深入 |
 
 **难度梯度（从易到难）：**
 HTML/CSS < Python < JavaScript < 数据分析 < 后端
@@ -28,10 +28,10 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 
 ### 1. Python 基础语法 `[-]`
 
-- [x] 变量、字符串、类型转换
-- [x] 条件判断、循环、break/continue
-- [x] 函数（def/参数/return）
-- [x] 数字运算（算术/比较/赋值/%///）
+- [X] 变量、字符串、类型转换
+- [X] 条件判断、循环、break/continue
+- [X] 函数（def/参数/return）
+- [X] 数字运算（算术/比较/赋值/%///）
 - [ ] 列表 list
 - [ ] 字典 dict
 - [ ] 元组 tuple / 集合 set
@@ -41,8 +41,9 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 **笔记入口：** [python-notes.md](notes/python/python-notes.md) ｜ [errors.md](notes/errors.md) ｜ [built-in-functions.md](notes/python/built-in-functions.md)
 
 **实战项目：**
-- [x] 猜数字游戏（projects/guess-game/game.py）
-- [x] 小练习集（projects/paper-organizer/：偶数、倍数、斤转千克、闰年、秒转时分秒、温度转换等）
+
+- [X] 猜数字游戏（projects/guess-game/game.py）
+- [X] 小练习集（projects/paper-organizer/：偶数、倍数、斤转千克、闰年、秒转时分秒、温度转换等）
 
 ### 2. SQLite（轻量数据库）`[ ]`
 
@@ -55,6 +56,7 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 **笔记入口：** `notes/sqlite-notes.md`（待建）
 
 **实战项目：**
+
 - [ ] 记账本：把每天的支出存进数据库，能查询汇总
 
 ### 3. 数据分析三件套 `[ ]`
@@ -62,21 +64,25 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 > 对应目录：`stage-01-python-data/data-analysis/`
 
 #### NumPy（数值计算）
+
 - [ ] 数组 ndarray 创建与运算
 - [ ] 索引、切片、广播
 
 #### Pandas（表格处理）★毕业论文核心
+
 - [ ] DataFrame 创建与读取（CSV / Excel）
 - [ ] 筛选、排序、分组、统计
 - [ ] 缺失值处理
 
 #### Matplotlib（画图）
+
 - [ ] 折线图、柱状图、饼图
 - [ ] 散点图、直方图
 
 **笔记入口：** `notes/data-analysis-notes.md`（待建）
 
 **实战项目：**
+
 - [ ] 分析湿地公园模拟数据（面积、人流量、周边房价）——毕业论文预演
 
 ### 4. Anaconda / 环境管理 `[ ]`
@@ -116,6 +122,7 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 **笔记入口：** `notes/frontend-notes.md`（待建）
 
 **实战项目：**
+
 - [ ] 个人作品集网页（静态）
 
 ---
@@ -135,6 +142,7 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 **笔记入口：** `notes/backend-notes.md`（待建）
 
 **实战项目：**
+
 - [ ] 把前端作品集 + 后端 API 串成一个完整网站
 
 ---
@@ -152,6 +160,7 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 **笔记入口：** `notes/gis-notes.md`（待建）
 
 **实战项目：**
+
 - [ ] 毕业论文：湿地公园案例空间分布图
 
 ---
@@ -160,19 +169,19 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 
 ### 1. n8n `[-]`
 
-- [x] 基本工作流（已有使用经验）
+- [X] 基本工作流（已有使用经验）
 - [ ] 结合 Python 脚本节点
 
 ### 2. Dify `[-]`
 
-- [x] 基本使用（已有使用经验）
+- [X] 基本使用（已有使用经验）
 - [ ] 知识库 / 工作流高级功能
 
 ### 3. AI Agent 开发 `[-]`
 
 > 对应目录：`stage-05-ai-tools/`。已有一个实战项目，后续深入。
 
-- [x] 多模型编排器（model-orchestrator：DeepSeek 老板 + 多家模型工人）
+- [X] 多模型编排器（model-orchestrator：DeepSeek 老板 + 多家模型工人）
 - [ ] OpenAI 兼容 API 深入
 - [ ] LangChain / RAG
 
@@ -184,14 +193,14 @@ HTML/CSS < Python < JavaScript < 数据分析 < 后端
 
 > 任何阶段都会用到的笔记，搬运自 Obsidian 知识库。
 
-| 笔记 | 内容 | 什么时候查 |
-|------|------|-----------|
-| [tech-terms-cheatsheet.md](notes/tech-terms-cheatsheet.md) | 技术术语人话解释 + 易混概念辨析 | 遇到不懂的名词时 |
-| [command-line-cheatsheet.md](notes/command-line-cheatsheet.md) | CMD / PowerShell / bash 命令对照速查 | 忘了命令怎么写时 |
-| [markdown-cheatsheet.md](notes/markdown-cheatsheet.md) | Markdown 语法速成 | 写笔记、写 README 时 |
-| [linux-notes.md](environment/linux-notes.md) | Linux 用户与 root 权限 | 操作云服务器时 |
-| [docker-notes.md](environment/docker-notes.md) | Docker 概念与常用命令 | 部署 Dify / 小模型时 |
-| [conda-notes.md](environment/conda-notes.md) | Conda 环境管理 | Python 环境出问题时 |
+| 笔记                                                          | 内容                                 | 什么时候查           |
+| ------------------------------------------------------------- | ------------------------------------ | -------------------- |
+| [tech-terms-cheatsheet.md](notes/tech-terms-cheatsheet.md)     | 技术术语人话解释 + 易混概念辨析      | 遇到不懂的名词时     |
+| [command-line-cheatsheet.md](notes/command-line-cheatsheet.md) | CMD / PowerShell / bash 命令对照速查 | 忘了命令怎么写时     |
+| [markdown-cheatsheet.md](notes/markdown-cheatsheet.md)         | Markdown 语法速成                    | 写笔记、写 README 时 |
+| [linux-notes.md](environment/linux-notes.md)                   | Linux 用户与 root 权限               | 操作云服务器时       |
+| [docker-notes.md](environment/docker-notes.md)                 | Docker 概念与常用命令                | 部署 Dify / 小模型时 |
+| [conda-notes.md](environment/conda-notes.md)                   | Conda 环境管理                       | Python 环境出问题时  |
 
 ---
 
