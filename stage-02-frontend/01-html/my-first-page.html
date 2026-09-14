@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- 上面这行告诉浏览器：这是一份现代 HTML 文档，请用标准模式渲染 -->
+
+<html lang="zh-CN">
+<!-- 整个页面的根标签；lang 声明内容是中文，方便浏览器和搜索引擎理解 -->
+
+<head>
+  <!-- “后台”区域：写给浏览器看的配置信息，不会显示在页面正文中 -->
+
+  <meta charset="UTF-8">
+  <!-- 声明编码为 UTF-8，中文才不会乱码 -->
+  <!-- 还记得 Docker 那次 nginx 显示“鎴戠殑”吗？就是缺了这一行 -->
+
+  <title>我的第一个网页</title>
+  <!-- 显示在浏览器标签页上的标题，也是搜索结果里的标题 -->
+</head>
+
+<body>
+  <!-- “前台”区域：用户真正能看到的内容，全部写在这里 -->
+
+  <h1>你好，我是桉桉</h1>
+  <!-- h1 = 一级标题（heading 1），页面上最大的字 -->
+  <!-- 一个页面一般只用一次，相当于文章的大标题 -->
+
+  <p>我正在学习前端，这是我的第一个网页。</p>
+  <!-- p = paragraph（段落），放一段普通文字 -->
+
+  <!-- ========== 小练习区域 ========== -->
+  <div>
+    <h2>我的学习路线</h2>
+    <ol>
+      <li>HTML：房子的骨架</li>
+      <li>CSS：房子的装饰</li>
+      <li>JavaScript：房子的功能</li>
+    </ol>
+  </div>
+  <!-- 任务：在下面用 h2、p、ol+li 写一段自我介绍 -->
+  <!-- 提示：ol = ordered list（有序列表），li = list item（列表项） -->
+
+  <div id="profile">
+    <h2>关于我</h2>
+    <p>我是<em>桉桉</em>，正在学习前端开发。</p>
+    <ol>
+      <li>HTML</li>
+      <li>CSS</li>
+      <li>JavaScript</li>
+    </ol>
+    <p>我对Agent和前端开发都有浓厚的兴趣。</p>
+    <p>我喜欢在闲暇时间学习新的技术，也喜欢与人分享我的见解。<br>如果你对我感兴趣，欢迎添加我的个人博客：<a href="https://www.modusensus.space" target="_blank" rel="noopener noreferrer">我的博客</a></p>
+    <img src="头像.jpg" alt="我的头像" width="200" height="200">
+  </div>
+
+</body>
+
+</html>

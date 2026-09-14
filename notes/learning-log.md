@@ -2,6 +2,44 @@
 
 > 每日学习进度记录。
 
+## 2026-09-14
+
+### HTML 主线（Codecademy + 亲手实验）
+
+- **属性通关**：href/src/id/charset/lang、属性三铁律（只放开标签、`名字="值"`、值打引号）、自闭合标签（img/meta）、id = 元素的学号
+- **行内 vs 块级**：div（纸箱，独占一行）vs span（荧光笔，只圈不拆），亲手在 `span-vs-div.html` 验证；em（自带墨水）vs span（空笔杆）辨析
+- **抓两条虫**：`</html>` 提前封顶（body 被关在房子外）；省略引号 + 值含空格被静默切断（`href=my page.html` 只读到 "my"）——宽容陷阱三连
+- **br / ol**：br = 同段断行（Markdown 行尾双空格的真相）；ol 有序列表，顺手把"学习路线"从 ul 改成 ol（语义修正）
+- **video**：布尔属性（controls/autoplay/muted 出现即生效）、fallback 兜底、autoplay 必配 muted 的 a11y 红线
+- **alt 与 a11y**：图片的声音替身（读屏/图挂兜底/SEO 三受众）；装饰图用空 alt；alt 跟着页面 lang 走（一页一语言）；体感记录："没 alt 的图不存在但又处处存在"
+- **SEO 初识**：搜索引擎 = 无目录图书馆的管理员，语义化标签都是递给爬虫的小抄；a11y 和 SEO 是同一枚硬币的两面
+- **外链安全**：target="_blank" 的反向操纵风险（tabnabbing），rel="noopener noreferrer" 焊死暗门——第一次触到前端安全
+- **综合练习**："个人名片"（div+id+em+ol+img+alt+a 全家桶），链接指向自己的博客
+- Codecademy 完成一章节 + 配套练习。下一站：表格 `<table>`
+
+### 开源里程碑 🎉
+
+- **CrewAI PR #7401 被 merge**——首个 merged 开源贡献（两个文件）
+- 当前贡献面板：CrewAI #7401 MERGED；axe-core #5357（failureSummary 测试）、#5361（EN 301 549 v4 标签）OPEN 等 review
+
+## 2026-09-13
+
+### Docker 收尾
+
+- 完成 Docker 学习：镜像构建、容器运行、目录挂载（`-v D:/mysite:/usr/share/nginx/html`）、UTF-8 编码坑（HTML 缺 `<meta charset="UTF-8">` 导致乱码）
+- 验证了挂载数据不存于容器本身：删容器重建裸 nginx，原页面消失
+
+### 前端启动：HTML
+
+- 决策：Python 暂缓，先学 HTML + CSS + JavaScript（前端方向）；资源 = Codecademy（课程）+ MDN（字典）
+- **标签规则**：成对出现，`/` 关盒；`<head>` 后台 vs `<body>` 展厅
+- **常用标签**：h1/h2、p、ul/li；完成首个页面 `stage-02-frontend/01-html/my-first-page.html`
+- **家族树层级**：父子兄弟靠"直接包裹"判定，不许跳级；h2 与 ul 兄弟、h1 是 li 的叔伯
+- **div 透明收纳盒**：页面长相不变但家族关系改变，动手验证了"body → div → ul → li"三代结构
+- **Markdown ↔ HTML 对照**：Markdown 是 HTML 速记版，编译后成 HTML；有 Markdown 基础学 HTML 上手极快
+- 踩坑：多余的 `</li>` 关闭标签——浏览器不报错但代码是错的（对比 Python 的 SyntaxError）
+- 笔记：知识点记录到 `notes/frontend/html-notes.md`
+
 ## 2026-08-08
 
 ### 项目搭建与配置
