@@ -2,6 +2,30 @@
 
 > 每日学习进度记录。
 
+## 2026-09-15
+
+### HTML 主线（Codecademy + 亲手实验）
+
+- **`<a>` 属性深挖**：href 三种地址类型（外部网址 / 页内锚点 `#id` / 相对路径，对照自己页面实例）；target 的 `_self`（默认）与 `_blank`（新标签页）；外链安全搭档口诀"用 _blank 必配 rel=noopener noreferrer"
+- **图片变链接（包裹法）**：`<a>` 中间放什么，什么就变成点击区域——文字/图片/一整个 div 都行
+- **缩进与注释**：缩进是写给人看的家谱图（子比爹多缩一层，浏览器不认，`</xxx>` 和 `<xxx>` 必须对齐）；注释 `<!-- -->` vs Python 的 `#`；注释也跟随缩进
+- **img 尺寸**：width/height = 显示尺寸（像素），不是文件真实大小；两个都写防加载时页面跳动
+- **Codecademy 博客作业**（`Codecademy练习.html`）：完整完成 NYFW 时尚博客页面，用上锚点跳转（#contact）、包裹法、alt
+
+### 无障碍实战：axe Accessibility Linter 🎯
+
+- 装了 Deque 官方的 **axe Accessibility Linter**（VS Code 免费插件，基于自己贡献过的 axe-core 引擎）
+- 装完立刻"制裁"博客作业，抓出 3 类问题，全部亲手修复：
+  1. **alt 缺失 ×3**：三张图没写 alt（含一张被 `<a>` 包着的功能性图片——读屏用户会拿到"无名按钮"）
+  2. **`_blank` 忘配 rel**：前两天刚背的搭档口诀，实战中第一反应还是忘了——口诀要练成肌肉记忆
+  3. **标题顺序跳级**：h3→h1→h2→h4，`heading-order` 规则（Codecademy 没教，linter 额外抓的）
+- 体感：亲眼看到红波浪线消失 = 用工具把学过的规则变成实时检查，a11y 不只是背规则，是能自动执行的
+
+### 开源里程碑 🎉
+
+- **axe-core PR #5361 被 merge**（EN 301 549 v4 标签）——跨项目合并 ×2
+- 当前贡献面板：CrewAI #7401 MERGED ✅；axe-core #5361 MERGED ✅、#5357（failureSummary 测试）OPEN 等 review
+
 ## 2026-09-14
 
 ### HTML 主线（Codecademy + 亲手实验）
@@ -20,7 +44,8 @@
 ### 开源里程碑 🎉
 
 - **CrewAI PR #7401 被 merge**——首个 merged 开源贡献（两个文件）
-- 当前贡献面板：CrewAI #7401 MERGED；axe-core #5357（failureSummary 测试）、#5361（EN 301 549 v4 标签）OPEN 等 review
+- **axe-core PR #5361 被 merge**（EN 301 549 v4 标签）——第二个仓库的合并！跨项目贡献 ×2
+- 当前贡献面板：CrewAI #7401 MERGED ✅；axe-core #5361 MERGED ✅、#5357（failureSummary 测试）OPEN 等 review
 
 ## 2026-09-13
 
