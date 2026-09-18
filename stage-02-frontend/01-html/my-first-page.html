@@ -18,10 +18,10 @@
 <body>
   <!-- “前台”区域：用户真正能看到的内容，全部写在这里 -->
   <header>
-    <h1>你好，我是桉桉</h1>
-    <nav>
     <!-- h1 = 一级标题（heading 1），页面上最大的字 -->
     <!-- 一个页面一般只用一次，相当于文章的大标题 -->
+    <h1>你好，我是桉桉</h1>
+    <nav>
       <a href="#profile">查看我的名片</a> 
     </nav>
 
@@ -30,153 +30,165 @@
   </header>
 
   <!-- ========== 小练习区域 ========== -->
-  <div>
-    <h2>我的学习路线</h2>
-    <ol>
-      <li>HTML：房子的骨架</li>
-      <li>CSS：房子的装饰</li>
-      <li>JavaScript：房子的功能</li>
-    </ol>
-  </div>
-  <!-- 任务：在下面用 h2、p、ol+li 写一段自我介绍 -->
-  <!-- 提示：ol = ordered list（有序列表），li = list item（列表项） -->
+  <main>
+    <div>
+      <h2>我的学习路线</h2>
+      <ol>
+        <li>HTML：房子的骨架</li>
+        <li>CSS：房子的装饰</li>
+        <li>JavaScript：房子的功能</li>
+      </ol>
+    </div>
+    <!-- 任务：在下面用 h2、p、ol+li 写一段自我介绍 -->
+    <!-- 提示：ol = ordered list（有序列表），li = list item（列表项） -->
 
-  <div id="profile">
-    <h2>关于我</h2>
-    <p>我是<em>桉桉</em>，正在学习前端开发。</p>
-    <ol>
-      <li>HTML</li>
-      <li>CSS</li>
-      <li>JavaScript</li>
-    </ol>
-    <p>我对Agent和前端开发都有浓厚的兴趣。</p>
-    <p>我喜欢在闲暇时间学习新的技术，也喜欢与人分享我的见解。<br>如果你对我感兴趣，欢迎添加我的个人博客：<a href="https://www.modusensus.space" target="_blank" rel="noopener noreferrer">我的博客</a></p>
-    <p>我正在学习的前端技术栈包括HTML、CSS、JavaScript、React、Vue等。<br>
-      我计划在未来学习更多前端技术，如Node.js、Express、MongoDB等。<br>未来小目标：做一个自己的<em>数据可视化网站</em>。</p>
-    <img src="头像.jpg" alt="我的头像" width="200" height="200">
-  </div>
+    
+    <article id="profile">
+      <h2>关于我</h2>
+      <p>我是<em>桉桉</em>，正在学习前端开发。</p>
+      <ol>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+      </ol>
+      <p>我对Agent和前端开发都有浓厚的兴趣。</p>
+      <p>我喜欢在闲暇时间学习新的技术，也喜欢与人分享我的见解。<br>如果你对我感兴趣，欢迎添加我的个人博客：<a href="https://www.modusensus.space" target="_blank" rel="noopener noreferrer">我的博客</a></p>
+      <p>我正在学习的前端技术栈包括HTML、CSS、JavaScript、React、Vue等。<br>
+        我计划在未来学习更多前端技术，如Node.js、Express、MongoDB等。<br>未来小目标：做一个自己的<em>数据可视化网站</em>。</p>
+      
+      <figure>
+        <img src="头像.jpg" alt="我的头像" width="200" height="200">
+        <figcaption>我的头像</figcaption>
+      </figure>
+    </article>
+    
+    
+    <div id="table">
+      <table style = "border: 1px solid black;">
+        <thead>
+          <tr>
+            <th scope="col">时间段</th>
+            <th scope="col">学习内容</th>
+            <th scope="col">备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">8：00am-10：00am</th> 
+            <td>HTML</td>
+            <td>学习HTML的基本语法和标签</td>
+          </tr>
+          <tr>
+            <th scope="row">10：00am-12：00am</th> 
+            <td>CSS</td>
+            <td>学习CSS的基本语法和选择器</td>
+          </tr>
+          <tr>
+            <th scope="row">12：00am-14：00am</th> 
+            <td>JavaScript</td>
+            <td>学习JavaScript的基本语法和数据类型</td>
+          </tr>
+          <tr>
+            <th scope="row">14：00am-16：00am</th> 
+            <td>React</td>
+            <td>学习React的基本语法和组件化开发</td>
+          </tr>
+          <tr>
+            <th scope="row">16：00am-18：00am</th> 
+            <td>Vue</td>
+            <td>学习Vue的基本语法和响应式系统</td>
+          </tr>
+          <tr>
+            <th scope="row">18：00am-20：00am</th> 
+            <td>Node.js</td>
+            <td>学习Node.js的基本语法和框架</td>
+          </tr>
+          <tr>
+            <th scope="row">20：00am-22：00am</th> 
+            <td>Express</td>
+            <td>学习Express的基本语法和框架</td>
+          </tr>
+          <tr>
+            <th scope="row">22：00am-24：00am</th> 
+            <td>MongoDB</td>
+            <td>学习MongoDB的基本语法和数据库</td>
+          </tr>
+          <tr>
+            <th scope="row">24：00am-08：00am</th> 
+            <td colspan="2">睡觉</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+
+    <hr>
+    <section>
+      <h2>Subscribe to my daily learning digest ！</h2>
+
+      <form action="#" method="POST">
+
+        <label for="email">Email:</label>
+
+        <input type="email" name="email" id="email" required>
+
+        <label for="name">Name</label>
+
+        <input type="text" name="name" id="name" required pattern="[A-Za-z0-9]{3,}">
+        <br>
+
+        <label for="volume">Volume:</label>
+
+        <input type="range" name="volume" id="volume" min="0" max="100" step="10">
+
+        <label for="frequency">Frequency:</label>
+
+        <select name="frequency" id="frequency">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+        </select>
+
+        <input type="submit"  value="Subscribe">
+      </form>
+    </section>
+    <section>
+      <h2>你正在学习哪些技术</h2>
+      <form action="#" method="POST">
+        <input type="checkbox" name="html" id="html" value="html" checked>
+        <label for="html">HTML</label>
+
+        <input type="checkbox" name="css" id="css" value="css">
+        <label for="css">CSS</label>
+
+        <input type="checkbox" name="javascript" id="javascript" value="javascript">
+        <label for="javascript">JavaScript</label>
+
+        <input type="checkbox" name="react" id="react" value="react">
+        <label for="react">React</label>
+
+        <input type="checkbox" name="vue" id="vue" value="vue">
+        <label for="vue">Vue</label>
+        <br>
+        <input type="submit" value="Submit">
+      </form>
+    </section>
+
+    <aside>
+      <p>悄悄说：这个页面是我学 HTML 的第 6 天写的。</p>
+    </aside>
+
+    <section>
+      <h2>留下你的评论</h2>
+      <form action="#" method="POST">
+        <label for="comment">Comment:</label>
+        <textarea name="comment" id="comment" rows="4" cols="40">在这里留下你的评论</textarea>
+        <input type="submit" value="Submit">
+      </form>
+    </section>
+  </main>
   
-  <div id="table">
-    <table style = "border: 1px solid black;">
-      <thead>
-        <tr>
-          <th scope="col">时间段</th>
-          <th scope="col">学习内容</th>
-          <th scope="col">备注</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">8：00am-10：00am</th> 
-          <td>HTML</td>
-          <td>学习HTML的基本语法和标签</td>
-        </tr>
-        <tr>
-          <th scope="row">10：00am-12：00am</th> 
-          <td>CSS</td>
-          <td>学习CSS的基本语法和选择器</td>
-        </tr>
-        <tr>
-          <th scope="row">12：00am-14：00am</th> 
-          <td>JavaScript</td>
-          <td>学习JavaScript的基本语法和数据类型</td>
-        </tr>
-        <tr>
-          <th scope="row">14：00am-16：00am</th> 
-          <td>React</td>
-          <td>学习React的基本语法和组件化开发</td>
-        </tr>
-        <tr>
-          <th scope="row">16：00am-18：00am</th> 
-          <td>Vue</td>
-          <td>学习Vue的基本语法和响应式系统</td>
-        </tr>
-        <tr>
-          <th scope="row">18：00am-20：00am</th> 
-          <td>Node.js</td>
-          <td>学习Node.js的基本语法和框架</td>
-        </tr>
-        <tr>
-          <th scope="row">20：00am-22：00am</th> 
-          <td>Express</td>
-          <td>学习Express的基本语法和框架</td>
-        </tr>
-        <tr>
-          <th scope="row">22：00am-24：00am</th> 
-          <td>MongoDB</td>
-          <td>学习MongoDB的基本语法和数据库</td>
-        </tr>
-        <tr>
-          <th scope="row">24：00am-08：00am</th> 
-          <td colspan="2">睡觉</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  
-
-  <hr>
-  <section>
-    <h2>Subscribe to my daily learning digest ！</h2>
-
-    <form action="#" method="POST">
-
-      <label for="email">Email:</label>
-
-      <input type="email" name="email" id="email" required>
-
-      <label for="name">Name</label>
-
-      <input type="text" name="name" id="name" required pattern="[A-Za-z0-9]{3,}">
-      <br>
-
-      <label for="volume">Volume:</label>
-
-      <input type="range" name="volume" id="volume" min="0" max="100" step="10">
-
-      <label for="frequency">Frequency:</label>
-
-      <select name="frequency" id="frequency">
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-      </select>
-
-      <input type="submit"  value="Subscribe">
-    </form>
-  </section>
-  <section>
-    <h2>你正在学习哪些技术</h2>
-    <form action="#" method="POST">
-      <input type="checkbox" name="html" id="html" value="html" checked>
-      <label for="html">HTML</label>
-
-      <input type="checkbox" name="css" id="css" value="css">
-      <label for="css">CSS</label>
-
-      <input type="checkbox" name="javascript" id="javascript" value="javascript">
-      <label for="javascript">JavaScript</label>
-
-      <input type="checkbox" name="react" id="react" value="react">
-      <label for="react">React</label>
-
-      <input type="checkbox" name="vue" id="vue" value="vue">
-      <label for="vue">Vue</label>
-      <br>
-      <input type="submit" value="Submit">
-    </form>
-  </section>
-
-  <section>
-    <h2>留下你的评论</h2>
-    <form action="#" method="POST">
-      <label for="comment">Comment:</label>
-      <textarea name="comment" id="comment" rows="4" cols="40">在这里留下你的评论</textarea>
-      <input type="submit" value="Submit">
-    </form>
-  </section>
-
-  
+  <footer>© 2026 桉桉 · 我的第一个网页</footer>
 </body>
 
 </html>
