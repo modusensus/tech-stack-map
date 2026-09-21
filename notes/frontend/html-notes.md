@@ -21,7 +21,7 @@
 - [br 与 ol — 换行和有序列表](#br-与-ol--换行和有序列表)
 - [hr 与 section — 分隔线与语义区块](#hr-与-section--分隔线与语义区块)
 - [语义化标签 — 会说话的盒子家族](#语义化标签--会说话的盒子家族)
-- [video — 视频盒](#video--视频盒)
+- [video 与 audio — 媒体播放盒](#video-与-audio--媒体播放盒)
 - [href 三种地址类型](#href-三种地址类型)
 - [target — 在哪个窗口打开](#target--在哪个窗口打开)
 - [外链安全 — target 与 noopener](#外链安全--target-与-noopener)
@@ -460,7 +460,7 @@ Markdown 对应：行尾打两个空格（或行尾 `\`）= `<br>`；空一行�
 
 **远期彩蛋**：数据可视化网站里每张"图表 + 图注"（图1：2026年学习时长分布）就是教科书级 figure 用法。
 
-## video — 视频盒
+## video 与 audio — 媒体播放盒
 
 ```html
 <video src="cat.mp4" controls>
@@ -468,10 +468,57 @@ Markdown 对应：行尾打两个空格（或行尾 `\`）= `<br>`；空一行�
 </video>
 ```
 
-- **双标签**（和 img 不同）——盒子里装了货（fallback 文字）
-- **布尔属性正式出场**：`controls` 无值、出现即生效；同类 `autoplay` / `muted` / `loop`
-- **a11y 红线**：`autoplay` + 有声音 = 公敌（WCAG：自动播超 3 秒必须可暂停）。实践口诀：**要 autoplay 就必须配 muted**
-- 与 img 的关键区别：img 靠 alt 兜底就够；video 的 fallback 是唯一能自己写的救命稻草，几乎总要写
+**`<audio>` 是 video 的亲兄弟**——共享同一套脾气，区别只有一条：video 有画面，audio 只有声音。
+
+```html
+<audio src="music.mp3" controls>
+  你的浏览器不支持音频播放  <!-- 一模一样的备胎 -->
+</audio>
+```
+
+**唯一不能照搬的**：audio 没有画面，所以**没有 width / height**——声音没法量尺寸 😄
+
+### 两个位置，一搞混就全乱
+
+| 东西                 | 写在哪             | 长啥样                    | 干什么                       |
+| -------------------- | ------------------ | ------------------------- | ---------------------------- |
+| **属性**（如 controls） | **标签里面**     | `<audio controls>`      | 调设置                       |
+| **fallback 内容**    | **开闭标签之间**   | `<audio>兜底文字</audio>` | 出问题时的备胎               |
+
+**fallback = 备胎**：正常时躺在后备箱里看不见；只有主胎爆了（浏览器太老 / 不认这个格式）才顶上来，把这句话当普通文字显示出来。
+
+这也顺便解释了**为什么它们是双标签**——中间那点空位就是留给备胎的。img 是自闭合标签（`<img>` 一个就完事），压根没地方写备胎，所以只能靠 alt。
+
+### 布尔属性逐个讲（video / audio 通用）
+
+上一节只列了名字，这里一个个拆开：
+
+| 属性         | 作用                       | 不写会怎样                              | 类比         |
+| ------------ | -------------------------- | --------------------------------------- | ------------ |
+| `controls`   | 显示播放条（播放/暂停/拖进度） | **播放器完全隐形**，页面上什么都看不到 | 遥控器       |
+| `autoplay`   | 打开页面就自动播放         | 乖乖等用户点播放                        | 自动开门     |
+| `muted`      | 静音                       | 有声音                                  | 静音键       |
+| `loop`       | 播完自动重头再播           | 播完就停住                              | 单曲循环     |
+
+```html
+<!-- 例① 最基础：有播放条，用户自己点 -->
+<audio src="music.mp3" controls></audio>
+
+<!-- 例② 想自动播 → 必须同时配 muted，否则是"公敌" -->
+<audio src="music.mp3" controls autoplay muted></audio>
+
+<!-- 例③ 背景音乐：自动播 + 静音 + 循环（三兄弟常一起出现） -->
+<audio src="bgm.mp3" autoplay muted loop></audio>
+
+<!-- 例④ 视频版：注意多一个 width，音频没有 -->
+<video src="cat.mp4" width="320" controls loop></video>
+```
+
+**`controls` 的反直觉点**：不写它，播放器**完全不可见**——页面上一片空白，声音却可能在放（配了 autoplay 的话）。新手最常见的懵点："我明明写了 audio，怎么啥都没看到？"
+
+**a11y 红线**：`autoplay` + 有声音 = 公敌（突然出声吓人一跳；WCAG 规定自动播放超 3 秒必须能暂停）。实践口诀：**要 autoplay 就必须配 muted**。
+
+**布尔属性的老规矩在这里照样生效**：`controls` 无值、出现即生效；`controls="false"` 依然是"开"（详见[布尔属性](#布尔属性--只有开和关的属性)章节）。
 
 ## href 三种地址类型
 
@@ -1012,6 +1059,21 @@ HTML 属性分两大家族：
 
 **判断口诀**：这个属性是"**调到某个值**"还是"**有 / 没有**"？
 
+**常见布尔属性清单**（都是开关，写了就是"开"，一个值都不用填）：
+
+| 属性         | 加在谁身上                  | 作用                         | 例子                                              |
+| ------------ | --------------------------- | ---------------------------- | ------------------------------------------------- |
+| `required`   | input / textarea / select   | 必填，空了不让提交           | `<input type="email" required>`                 |
+| `checked`    | checkbox / radio            | 打开页面时默认就勾上         | `<input type="checkbox" checked>`               |
+| `selected`   | option                      | 下拉列表默认选中它           | `<option value="daily" selected>Daily</option>` |
+| `disabled`   | 各种表单控件                | 灰掉，不能点、提交时也不发   | `<input type="submit" disabled>`                |
+| `controls`   | video / audio               | 显示播放条                   | `<audio src="a.mp3" controls>`                  |
+| `autoplay`   | video / audio               | 打开页面自动播放             | `<video src="a.mp4" autoplay muted>`            |
+| `muted`      | video / audio               | 静音                         | 同上                                              |
+| `loop`       | video / audio               | 播完自动重头再播             | `<audio src="a.mp3" loop>`                      |
+
+**注意 `checked` 和 `selected` 的坑**：它们只决定**打开页面时的初始状态**，用户点了之后照样能改。不是"锁死"，是"预设"。
+
 **怪脾气①：三种写法完全等价**（都是"开"）
 
 ```html
@@ -1123,3 +1185,4 @@ XML 像一个**空文件柜**——柜子怎么分格你自己定，它只管**�
 - **开源里程碑**：CrewAI PR #7401 被合并 🎉（首个 merged 贡献）。axe-core PR #5361 也被合并 🎉（跨项目 ×2）。axe-core #5357 保持 OPEN 等 review。
 - **2026-09-18**：`<article>` 补上——判断口诀"**抠出来还能独立成篇就是 article**"，section 问主题、article 问独立作品。个人主页"关于我"从 div 升级成 `<article id="profile">`。踩坑：套上 article 后外面的 `<div id="profile">` 变多余层（语义已够），选了"删 div + id 搬家"方案，亲眼验证锚点不受影响。至此 7 个"会说话的盒子"凑齐 6 个（只剩 `<aside>` 留待边栏场景）。HTML 真正收工，下一站 CSS 🎨
 - **2026-09-18 续：语义化全家桶集齐 🎉**：**`<aside>`**（墙上的小贴士）——判断标准是**跟主线的关系**而非"能不能删"，电影正片 vs 花絮之辨。**踩坑两连**：① 拿"反复出现、可有可无"当标准（其实"能删"谁都能满足）；② 想用 aside 收编撞车的内容（内容重复 ≠ 角色降级，该删该改而不是换标签）。想通一句：**盒子不是集邮**，页面没花絮型内容就不硬请 aside 出场。**`<figure>` + `<figcaption>`**（展品 + 标签牌）——figcaption 必须住 figure 肚子里、一柜一牌；顺带理清 **alt vs figcaption 分工**（alt 给看不到图的人当替身、不显示；figcaption 给所有人看、显示在图下方，两者信息别重复）。个人主页战果：加了第一块真 aside（"这个页面是我学 HTML 的第 6 天写的"花絮）+ 头像升级成 figure 带牌。7 个"会说话的盒子"全部到齐，HTML 语义化真正通关 🎉 下一站 CSS
+- **2026-09-18 收尾**：**`<audio>`** 补上——video 的亲兄弟，共用一套脾气，唯一区别是没画面所以**没有 width / height**。重新搞懂两个词：**fallback**（备胎，写在开闭标签之间，正常看不见、浏览器不认格式时才顶上来）vs **controls**（遥控器，属性写在标签里，不写则播放器完全隐形）。提炼口诀：**属性写在标签里，内容写在肚子里**。同时把笔记里两处"太笼统"的地方补厚：video/audio 章节从 4 行扩写成完整小节（fallback 位置对照表 + 布尔属性逐个拆解 + 4 个实例），布尔属性章节补上 **8 个常见布尔属性的清单表**（required / checked / selected / disabled / controls / autoplay / muted / loop），并记下 `checked`/`selected` 只设"初始状态"不是"锁死"
