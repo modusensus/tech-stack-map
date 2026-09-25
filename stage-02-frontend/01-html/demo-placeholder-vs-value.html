@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>演示 1：placeholder（便利贴）vs value（钢笔字）</title>
+</head>
+<body>
+
+  <h1>便利贴 vs 钢笔字</h1>
+
+  <p>
+    下面两个输入框，看上去"里面都有字"，但它们的身份完全不同。
+    什么都不填，直接点提交，然后<strong>看浏览器地址栏</strong>——答案就写在那里。
+  </p>
+
+  <!-- 关键点：method="GET" 才会把提交的内容显示在地址栏里。
+       POST 是"偷偷寄走"，肉眼看不到。 -->
+  <form action="" method="GET">
+
+    <p>
+      <label for="box1">框 1（提示用 placeholder 写的）：</label><br>
+      <input type="text" id="box1" name="box1"
+             placeholder="我是便利贴，你一打字我就消失">
+    </p>
+
+    <p>
+      <label for="box2">框 2（内容用 value 写死的）：</label><br>
+      <input type="text" id="box2" name="box2"
+             value="我是钢笔字，会跟着一起寄出去">
+    </p>
+
+    <button type="submit">提交</button>
+  </form>
+
+  <hr>
+
+  <h2>你该看到什么</h2>
+
+  <ol>
+    <li>什么都不填，直接点"提交"。</li>
+    <li>看地址栏末尾，会多出一段 <code>?box1=&amp;box2=...</code></li>
+    <li>
+      重点在这里：
+      <ul>
+        <li><code>box1=</code> 后面是<strong>空的</strong> —— 便利贴不算内容，寄出去时它不在包裹里。</li>
+        <li><code>box2=</code> 后面<strong>跟着那串字</strong> —— 钢笔字是真内容，会寄出去。</li>
+      </ul>
+    </li>
+  </ol>
+
+  <p>
+    如果 <code>box2</code> 后面显示成 <code>%E6%88%91%E6%98%AF...</code> 这种"乱码"，
+    别慌——那是中文被打包压缩了（叫 URL 编码），属于正常现象。
+  </p>
+
+  <h2>再做一个实验</h2>
+
+  <p>
+    这次在<strong>框 1 里打几个字</strong>，再点提交。
+    你会发现地址栏里的 <code>box1=</code> 后面<strong>有值了</strong>。
+  </p>
+
+  <p>
+    想通这件事：<strong>便利贴只负责"提醒你写"，它自己不是内容；
+    你一落笔，便利贴撕掉，留下来的才是内容。</strong>
+  </p>
+
+</body>
+</html>

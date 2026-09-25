@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>演示 2：新开的那扇门</title>
+</head>
+<body>
+
+  <h1>我是新开的那扇门</h1>
+
+  <p id="result">正在检查电话线……</p>
+
+  <hr>
+
+  <p>
+    <small>
+      下面这段是 JavaScript（你还没学到，先看效果就行）。
+      它只做一件事：检查 <code>window.opener</code> 是不是空的。
+    </small>
+  </p>
+
+  <script>
+    // window.opener 就是那根"隐形电话线"：
+    //   不是 null → 电话线还连着（原页面没写 noopener）
+    //   是 null   → 电话线被剪断了（原页面写了 noopener）
+    const phoneLine = window.opener;
+    const result = document.getElementById('result');
+
+    if (phoneLine) {
+      result.textContent = '危险：电话线还连着，我能顺着它指挥你的原页面。';
+      result.style.color = 'red';
+      result.style.fontWeight = 'bold';
+    } else {
+      result.textContent = '安全：电话线已剪断，我完全摸不到你的原页面。';
+      result.style.color = 'green';
+      result.style.fontWeight = 'bold';
+    }
+  </script>
+
+</body>
+</html>
