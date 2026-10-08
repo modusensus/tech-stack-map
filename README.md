@@ -4,6 +4,8 @@
 
 > 📌 **学习入口请看 [TECH-STACK-MAP.md](TECH-STACK-MAP.md)**（含每个技术的进度、笔记入口、实战项目清单）。
 
+> 🌐 **在线学习台：<https://modusensus.github.io/tech-stack-map/>** —— 进度打卡 + 点积实验室 + 复习卡 + 笔记档案，手机也能打开。
+
 ## Learning Goals
 
 - Python programming
@@ -79,6 +81,26 @@ HTML/CSS  <  Python  <  JavaScript  <  数据分析(NumPy/Pandas)  <  后端(Fas
 | Daily Report Agent | AI information workflow     |
 | Paper Assistant    | Academic research assistant |
 
+## 在线学习台（site/）
+
+> 🌐 <https://modusensus.github.io/tech-stack-map/>
+
+把仓库里的学习内容做成的一个可交互网页，纯手写 HTML / CSS / JS，没有构建工具——所以代码本身也是学习材料。
+
+| 模块     | 作用                                                                                |
+| -------- | ----------------------------------------------------------------------------------- |
+| 进度看板 | 按阶段勾选打卡，用 localStorage 存在浏览器里，关掉再开还在                            |
+| 点积实验室 | 拖数字实时算点积 / 余弦相似度 / 夹角，配一张会动的 SVG 向量图                       |
+| 复习卡   | 7 张薄弱点卡片（点积、LoRA、`<source>` 等），可随机抽卡、翻答案                       |
+| 笔记档案 | 把 `notes/` 与 `environment/` 下的 19 篇 markdown 按分类翻阅，笔记间的 .md 链接可直接站内跳转 |
+
+**怎么更新：**
+
+- **改了笔记** —— 什么都不用做。`git push` 到 `main` 后 GitHub Actions 会自动重跑 `node site/build-notes.js` 再部署，线上永远和仓库同步。
+- **改了网页本身** —— 同样 `git push` 即可，约 30 秒后自动上线。
+- **本地预览** —— 直接双击 `site/index.html`，不需要起服务器。
+- **想收录新的笔记文件夹** —— 改 `site/build-notes.js` 顶部的 `SOURCES` 列表，然后执行一次 `node site/build-notes.js`。
+
 ## Structure
 
 ```
@@ -99,6 +121,14 @@ tech-stack-map/
 ├── stage-03-backend/        # 阶段三：后端
 ├── stage-04-gis/            # 阶段四：GIS（配合城乡规划专业）
 ├── stage-05-ai-tools/       # 阶段五：AI Agent + 自动化工具
+├── site/                    # 🌐 在线学习台（GitHub Pages 的部署源，见上一节）
+│   ├── index.html           #   页面结构
+│   ├── styles.css           #   样式
+│   ├── app.js               #   交互逻辑（进度 / 点积 / 复习卡 / 笔记档案）
+│   ├── build-notes.js       #   把 notes/ 打包成 notes-data.js（零依赖 Node 脚本）
+│   ├── notes-data.js        #   自动生成，不要手改
+│   └── vendor/              #   第三方库（marked，已本地化，不依赖 CDN）
+├── .github/workflows/       # GitHub Actions：推送 main 后自动部署 Pages
 ├── requirements.txt         # 依赖清单
 └── README.md                # 本文件（简版门面）
 ```
