@@ -73,7 +73,9 @@ function persistFromInputs() {
 }
 
 // 重算：每个阶段一张卡片的百分比 + 顶部"总进度"
-function renderProgress() {
+// animate=false 用于页面刚打开那一次：直接显示真值，
+// 否则数字会从 0% 滚上去，看着像"进度被清空了"。
+function renderProgress(animate) {
   let totalAll = 0;
   let doneAll = 0;
 
@@ -95,10 +97,13 @@ function renderProgress() {
     doneAll += done;
   });
 
-  // 顶部总进度：条形图宽度直接改（CSS 有 transition），数字滚动过去
+  // 顶部总进度：条形图宽度直接改（CSS 有 transition）
   const overallPct = totalAll ? Math.round((doneAll / totalAll) * 100) : 0;
   document.getElementById('overall-fill').style.width = overallPct + '%';
-  animateNumber(document.getElementById('overall-pct'), overallPct);
+
+  const pctEl = document.getElementById('overall-pct');
+  if (animate === false) pctEl.textContent = overallPct + '%';
+  else animateNumber(pctEl, overallPct);
 }
 
 // 初始化：先还原状态，再挂监听
@@ -117,7 +122,7 @@ function initProgress() {
     });
   });
 
-  renderProgress();
+  renderProgress(false);   // 首次直接写真值，不滚动
 }
 
 /* ------------------------------------------------------------
