@@ -1,0 +1,45 @@
+name: 部署学习台到 GitHub Pages
+
+# 触发条件：main 分支有新提交时自动部署；也可以在 Actions 页面手动点一下跑
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GitHub Pages 部署需要的三项权限（少一项就会失败）
+permissions:
+  contents: read    # 读代码
+  pages: write      # 写 Pages
+  id-token: write   # 用 OIDC 令牌跟 Pages 服务换发布凭据
+
+# 同一时间只跑一个部署；连着推两次时，取消排队中的旧任务
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}   # 部署完把网址填进 Actions 界面
+    steps:
+      - name: 取出仓库代码
+        uses: actions/checkout@v4
+
+      - name: 用仓库里的笔记重新生成 notes-data.js
+        # build-notes.js 零依赖，直接用 runner 自带的 Node 跑即可。
+        # 这样就算本地忘了执行，线上的笔记档案也是最新的。
+        run: node site/build-notes.js
+
+      - name: 配置 Pages
+        uses: actions/configure-pages@v5
+
+      - name: 打包 site/ 目录为部署产物
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: 发布
+        id: deployment
+        uses: actions/deploy-pages@v4

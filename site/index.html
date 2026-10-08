@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- viewport：让手机浏览器不把页面缩成"整页缩小版"，而是按设备宽度排版 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tech Stack Map · 学习台</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ============ 报头 masthead ============ -->
+  <!-- 一个页面只能有一个 <main>，但 <header> 可以有多个（这个是大报头） -->
+  <header class="masthead">
+    <p class="kicker">个人技术栈 · 学习台 · No.01</p>
+    <h1 class="masthead__title">Tech&nbsp;Stack&nbsp;Map</h1>
+    <p class="deck">从 Python 到前端、再到 AI——一条一条学，一格一格点亮。<br>
+      这不是课本，是你自己的进度档案。</p>
+
+    <nav class="toc" aria-label="页面目录">
+      <a href="#progress">进度看板</a>
+      <a href="#lab">点积实验室</a>
+      <a href="#cards">复习卡</a>
+      <a href="#archive">笔记档案</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ============ 一、进度看板 ============ -->
+    <section id="progress" class="block">
+      <header class="block__head">
+        <h2 class="block__title">进度看板</h2>
+        <p class="block__note">勾选会立刻保存到浏览器里；关掉页面再回来，勾还在。</p>
+      </header>
+
+      <!-- 总进度：条形图宽度由 JS 根据所有勾选框自动算 -->
+      <div class="overall" aria-live="polite">
+        <span class="overall__label">总进度</span>
+        <div class="bar bar--thick"><span id="overall-fill" style="width:0%"></span></div>
+        <span class="overall__pct" id="overall-pct">0%</span>
+      </div>
+
+      <!-- 阶段卡片 -->
+      <div class="stages">
+
+        <!-- 阶段一 -->
+        <article class="stage" data-stage="s01">
+          <div class="stage__top">
+            <h3 class="stage__name"><span class="stage__no">01</span> Python + SQLite + 数据分析</h3>
+            <span class="stage__pct">0%</span>
+          </div>
+          <div class="bar"><span></span></div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-id="s01-1" checked> 变量、字符串、类型转换</label></li>
+            <li><label><input type="checkbox" data-id="s01-2" checked> 条件判断、循环、break / continue</label></li>
+            <li><label><input type="checkbox" data-id="s01-3" checked> 函数 def / 参数 / return</label></li>
+            <li><label><input type="checkbox" data-id="s01-4" checked> 数字运算（算术 / 比较 / 赋值 / % //）</label></li>
+            <li><label><input type="checkbox" data-id="s01-5"> 列表 list</label></li>
+            <li><label><input type="checkbox" data-id="s01-6"> 字典 dict</label></li>
+            <li><label><input type="checkbox" data-id="s01-7"> 元组 tuple / 集合 set</label></li>
+            <li><label><input type="checkbox" data-id="s01-8"> 文件读写 + CSV</label></li>
+            <li><label><input type="checkbox" data-id="s01-9"> 异常处理 try / except</label></li>
+            <li><label><input type="checkbox" data-id="s01-10"> SQLite（建表 / 增删改查）</label></li>
+            <li><label><input type="checkbox" data-id="s01-11"> 数据分析三件套（NumPy / Pandas / Matplotlib）</label></li>
+          </ul>
+        </article>
+
+        <!-- 阶段二 -->
+        <article class="stage" data-stage="s02">
+          <div class="stage__top">
+            <h3 class="stage__name"><span class="stage__no">02</span> 前端三件套 + 设计</h3>
+            <span class="stage__pct">0%</span>
+          </div>
+          <div class="bar"><span></span></div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-id="s02-1" checked> 常用标签（标题 / 段落 / 链接 / 图片 / 列表 / 表单）</label></li>
+            <li><label><input type="checkbox" data-id="s02-2" checked> 语义化标签（header / nav / main / footer / section / article）</label></li>
+            <li><label><input type="checkbox" data-id="s02-3"> audio / video / source（多格式备胎）</label></li>
+            <li><label><input type="checkbox" data-id="s02-4"> CSS 选择器、盒模型</label></li>
+            <li><label><input type="checkbox" data-id="s02-5"> 布局 flex / grid</label></li>
+            <li><label><input type="checkbox" data-id="s02-6"> 响应式（媒体查询 / viewport）</label></li>
+            <li><label><input type="checkbox" data-id="s02-7"> JavaScript 基础与 DOM 操作</label></li>
+          </ul>
+        </article>
+
+        <!-- 阶段三 -->
+        <article class="stage" data-stage="s03">
+          <div class="stage__top">
+            <h3 class="stage__name"><span class="stage__no">03</span> 后端（FastAPI / Node）</h3>
+            <span class="stage__pct">0%</span>
+          </div>
+          <div class="bar"><span></span></div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-id="s03-1"> 路由、请求、响应</label></li>
+            <li><label><input type="checkbox" data-id="s03-2"> 返回 JSON、连接数据库</label></li>
+            <li><label><input type="checkbox" data-id="s03-3"> 前后端串起来做一个完整网站</label></li>
+          </ul>
+        </article>
+
+        <!-- 阶段四 -->
+        <article class="stage" data-stage="s04">
+          <div class="stage__top">
+            <h3 class="stage__name"><span class="stage__no">04</span> GIS（QGIS + GeoPandas）</h3>
+            <span class="stage__pct">0%</span>
+          </div>
+          <div class="bar"><span></span></div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-id="s04-1"> QGIS 基本操作（加载图层 / 导出地图）</label></li>
+            <li><label><input type="checkbox" data-id="s04-2"> GeoPandas 处理地理数据</label></li>
+            <li><label><input type="checkbox" data-id="s04-3"> 毕业论文：湿地公园案例空间分布图</label></li>
+          </ul>
+        </article>
+
+        <!-- 阶段五 -->
+        <article class="stage" data-stage="s05">
+          <div class="stage__top">
+            <h3 class="stage__name"><span class="stage__no">05</span> 自动化 / AI 工具</h3>
+            <span class="stage__pct">0%</span>
+          </div>
+          <div class="bar"><span></span></div>
+          <ul class="checks">
+            <li><label><input type="checkbox" data-id="s05-1" checked> n8n 基本工作流</label></li>
+            <li><label><input type="checkbox" data-id="s05-2" checked> Dify 基本使用</label></li>
+            <li><label><input type="checkbox" data-id="s05-3" checked> 多模型编排器 model-orchestrator</label></li>
+            <li><label><input type="checkbox" data-id="s05-4"> LangChain / RAG</label></li>
+          </ul>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ============ 二、点积实验室 ============ -->
+    <section id="lab" class="block">
+      <header class="block__head">
+        <h2 class="block__title">点积实验室</h2>
+        <p class="block__note">
+          点积 = 对应分量相乘再求和。它还等于 <em>|a| · |b| · cosθ</em>——
+          所以余弦相似度能衡量"两个方向有多像"。改数字试试。
+        </p>
+      </header>
+
+      <div class="lab">
+        <!-- 左：输入区 -->
+        <div class="lab__controls">
+          <div class="field">
+            <label for="ax">向量 a 的 x</label>
+            <input type="number" id="ax" value="3" step="1">
+          </div>
+          <div class="field">
+            <label for="ay">向量 a 的 y</label>
+            <input type="number" id="ay" value="4" step="1">
+          </div>
+          <div class="field">
+            <label for="bx">向量 b 的 x</label>
+            <input type="number" id="bx" value="4" step="1">
+          </div>
+          <div class="field">
+            <label for="by">向量 b 的 y</label>
+            <input type="number" id="by" value="3" step="1">
+          </div>
+
+          <div class="presets">
+            <button type="button" data-preset="similar">同向相似</button>
+            <button type="button" data-preset="perp">垂直</button>
+            <button type="button" data-preset="opposite">反向</button>
+            <button type="button" data-preset="random">随机</button>
+          </div>
+        </div>
+
+        <!-- 右：画布 -->
+        <div class="lab__canvas">
+          <svg id="plot" viewBox="0 0 260 260" role="img" aria-label="两个向量的平面示意图">
+            <g id="grid" stroke="#e2ddd2" stroke-width="1"></g>
+            <!-- 网格和坐标轴都由 app.js 画出，这里只留空壳 -->
+            <line id="axis-x" x1="0" y1="0" x2="0" y2="0" stroke="#8a857d" stroke-width="1.2"></line>
+            <line id="axis-y" x1="0" y1="0" x2="0" y2="0" stroke="#8a857d" stroke-width="1.2"></line>
+            <!-- 两支向量（端点由 JS 设置） -->
+            <line id="vec-a" x1="130" y1="130" x2="130" y2="130" stroke="#b3261e" stroke-width="2.5"></line>
+            <circle id="vec-a-dot" cx="130" cy="130" r="3.5" fill="#b3261e"></circle>
+            <line id="vec-b" x1="130" y1="130" x2="130" y2="130" stroke="#1a1a1a" stroke-width="2.5"></line>
+            <circle id="vec-b-dot" cx="130" cy="130" r="3.5" fill="#1a1a1a"></circle>
+          </svg>
+          <p class="lab__legend"><span class="key key--a"></span> 向量 a　<span class="key key--b"></span> 向量 b</p>
+        </div>
+      </div>
+
+      <!-- 结果读数 -->
+      <dl class="readout">
+        <div><dt>点积 a·b</dt><dd id="out-dot">—</dd></div>
+        <div><dt>|a|</dt><dd id="out-ma">—</dd></div>
+        <div><dt>|b|</dt><dd id="out-mb">—</dd></div>
+        <div><dt>余弦相似度 cosθ</dt><dd id="out-cos">—</dd></div>
+        <div><dt>夹角 θ</dt><dd id="out-angle">—</dd></div>
+      </dl>
+      <p class="verdict" id="out-verdict">—</p>
+    </section>
+
+    <!-- ============ 三、复习卡 ============ -->
+    <section id="cards" class="block">
+      <header class="block__head">
+        <h2 class="block__title">复习卡</h2>
+        <p class="block__note">来自定位测验与 HTML 自测里露出的薄弱点。点击卡片翻看答案，或者让系统随机抽一张。</p>
+      </header>
+
+      <!-- 随机抽卡工具条 -->
+      <div class="drawbar">
+        <button type="button" id="draw-btn">随机抽一张</button>
+        <span class="drawbar__count" id="draw-count">已抽 0 / 7</span>
+      </div>
+
+      <div class="flashes">
+        <article class="flash">
+          <p class="flash__tag">AI · 数学</p>
+          <h3 class="flash__q">两个向量的「点积」怎么算？几何意义是什么？</h3>
+          <p class="flash__a">对应分量相乘再求和：a·b = a₁b₁ + a₂b₂ + …。几何上等于 |a|·|b|·cosθ，衡量两个方向的相似程度。你的记忆门控用的就是它。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">AI · 机器学习</p>
+          <h3 class="flash__q">「参数」和「超参数」有什么区别？</h3>
+          <p class="flash__a">参数是模型自己从数据里学出来的（比如权重）；超参数是人事先设好的（学习率、层数、批次大小），训练不会改它。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">AI · Transformer</p>
+          <h3 class="flash__q">LoRA 低秩适配是什么？</h3>
+          <p class="flash__a">不重训整个大模型，只训练两个小矩阵（把权重更新拆成低秩的两个小矩阵相乘）来微调。省显存、省时间。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">HTML · 音视频</p>
+          <h3 class="flash__q">audio 里的 &lt;source&gt; 是干嘛的？为什么不直接写 src？</h3>
+          <p class="flash__a">src 只能给一个文件；&lt;source&gt; 能列一串，让浏览器自己挑能放的格式（如 mp3 / ogg），一个一个试。type 属性帮浏览器提前预判格式。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">HTML · 表单</p>
+          <h3 class="flash__q">placeholder 和 value 的区别？</h3>
+          <p class="flash__a">placeholder 是贴在框里的便签，一撕就没、不会提交；value 是已经写好的字，会跟着表单一起寄出去。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">HTML · 标签数量</p>
+          <h3 class="flash__q">&lt;main&gt; 和 &lt;header&gt; 各有几个？</h3>
+          <p class="flash__a">&lt;main&gt; 全页唯一，一个页面只能有一个；&lt;header&gt; 可以有多个（页面顶部一个，每篇 article 顶部还能各来一个）。</p>
+        </article>
+
+        <article class="flash">
+          <p class="flash__tag">HTML · 安全</p>
+          <h3 class="flash__q">target="_blank" 后面为什么要加 rel="noopener"？</h3>
+          <p class="flash__a">不加的话，新打开的页面能通过 window.opener 反过来操纵你的原页面（那条"隐形电话线"）。noopener 把线剪断。现代 Chrome 88+ 已默认帮你剪，但写上更保险。</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ 四、笔记档案 ============ -->
+    <section id="archive" class="block">
+      <header class="block__head">
+        <h2 class="block__title">笔记档案</h2>
+        <p class="block__note">
+          仓库里 <strong>notes/</strong> 和 <strong>environment/</strong> 下的 .md 笔记，都在这儿按档案的方式翻阅。
+          笔记里指向另一篇笔记的链接可以直接点，会在右侧打开。
+        </p>
+      </header>
+
+      <div class="archive">
+        <!-- 左：目录 -->
+        <aside class="archive__toc">
+          <input type="search" id="note-search" class="archive__search"
+                 placeholder="搜索标题 / 摘要…" aria-label="搜索笔记">
+          <nav id="note-list" aria-label="笔记目录"></nav>
+        </aside>
+
+        <!-- 右：阅读区 -->
+        <article class="archive__reader">
+          <header class="reader__head">
+            <p class="reader__cat" id="note-cat">—</p>
+            <h3 class="reader__title" id="note-title">加载中…</h3>
+            <p class="reader__meta" id="note-meta"></p>
+          </header>
+          <div class="prose" id="note-body">
+            <p>正在读取笔记数据…</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="colophon">
+    <p>Tech Stack Map · 学习台　|　笔记内容源：本仓库的 notes/ 、environment/ 与根目录 .md</p>
+    <p>纯手写 HTML / CSS / JS；笔记由 <code>node site/build-notes.js</code> 打包成 notes-data.js。</p>
+  </footer>
+
+  <!-- 顺序有讲究：先解析器，再数据，最后才是页面逻辑 -->
+  <script src="vendor/marked.min.js"></script>
+  <script src="notes-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
