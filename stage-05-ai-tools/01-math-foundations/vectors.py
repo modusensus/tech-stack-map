@@ -2,78 +2,167 @@
 AI 工程课 Phase 1 / Lesson 01：线性代数直觉
 配套代码：不依赖任何第三方库，用纯 Python 从零实现向量与矩阵。
 
+=== 这个文件是什么 ===
+它不是工具、不是项目，是一个"练习文件"。目的只有一个：把"向量""矩阵"这些
+数学概念，写成能真的跑起来的 Python 代码，让你亲眼看见
+"点积确实等于对应位置相乘再相加"。
+
+文件结构：
+  - Vector 类  → 第 1 块（向量）到第 4 块（余弦相似度）的内容
+  - Matrix 类  → 第 5 块（矩阵 = 线性变换）
+  - 最底下 if __name__ == "__main__": 是"演示区"，
+    直接运行本文件（python vectors.py）就会打印一堆结果给你看。
+
+=== 读代码前先认识 4 个 Python 词 ===
+1) 类（class）：把"一种东西"和"它的做法"打包在一起。
+   `class Vector:` 这句话的意思就是"我要定义'向量'这种东西"。
+2) 实例：用这个定义真正造出来的一个具体对象。
+   `Vector([1, 2, 3])` 造出来的就是一个"向量实例"。
+3) self：实例自己。`self.components` 读作"我自己的 components"。
+4) __init__：造一个新实例时自动跑一遍的那段代码，相当于"出生时要做的事"。
+   前后两根下划线是 Python 的约定，表示"这是 Python 自己用的名字"。
+   所以你永远不会手写 v.__init__()，你只会写 Vector([1, 2, 3])。
+
 来源：ai-engineering-from-scratch / phases/01-math-foundations/01-linear-algebra-intuition
-说明：本文件是课程的 Build It 环节，用来把"向量是点+箭头""矩阵是变形机器"
-      这两句话，变成能真实跑起来的东西。
 """
 
 
 class Vector:
     """向量：一串有序的数字。
 
-    两个身份：
+    两个身份（同一个东西的两种看法）：
       1) 空间里的一个点（位置）
       2) 从原点出发的一支箭（有方向、有长度）
+
+    维数：这个向量里有几个数字，就是几维。
+      [1, 2, 3] 有 3 个数字 → 3 维
+      [4, 5]    有 2 个数字 → 2 维
+    维数是向量的一部分，不是附属信息：[1,2] 和 [1,2,3] 属于两个不同的空间。
+    而且维数不同的两个向量，既不能相加、也不能做点积——逐项对不齐。
     """
 
     def __init__(self, components):
-        # components 是数字序列，例如 [1, 2, 3]
-        # 用 list() 复制一份，避免外部改原列表时把向量悄悄改掉
+        """出生时要做的事：把数字存好，把维数算好。
+
+        你写 Vector([1, 2, 3]) 的那一刻，Python 会自动把 [1, 2, 3] 塞给
+        这个函数的 components 参数，然后下面两行立刻执行。
+
+        参数：
+            components：要放进向量的数字序列，例如 [1, 2, 3]
+        """
+        # components 就是传进来的那串数字，例如 [1, 2, 3]。
+        # 用 list() 复制一份再存：
+        #   如果直接写 self.components = components，存的只是"同一个列表的引用"，
+        #   外面之后改了原列表，这个向量就会被悄悄改掉。复制一份就互不影响了。
         self.components = list(components)
-        # 维数 = 分量的个数，[1,2,3] 的 dim 是 3
+
+        # dim 是我自己起的名字，dimension（维度）的缩写，存的就是上面说的"维数"。
+        # len(...) 数一数里面有几个数字。
+        # 为什么单独存一份：每次用的时候重新数一遍太麻烦，出生时数一次、以后直接查。
         self.dim = len(self.components)
 
     def __add__(self, other):
-        # 向量加法：对应位置相加（可加性的实现）
-        # zip 把两个列表按位置配对：(1,4), (2,5), (3,6)
+        """向量加法：对应位置相加。这就是"可加性"的代码实现。
+
+        __add__ 是 Python 的"魔法方法"：名字以 __ 开头结尾的函数，会在你用
+        + 运算符时自动被调用。所以写 a + b，实际执行的是 a.__add__(b)。
+        """
+        # 下面这一行塞了三个 Python 特性，逐个拆开看：
+        #   zip(self.components, other.components)
+        #       把两个列表按位置配成对：(1,4), (2,5), (3,6)
+        #   [a + b for a, b in ...]
+        #       列表推导式：对每一对都做 a + b，把结果收集成一个新列表
+        #   Vector(...)
+        #       用这个新列表造出一个新向量（注意：原来的两个向量不会被改动）
+        #
+        # 避坑：zip 遇到两个长度不一样的列表，会按"短的"那边截断，而且不报错。
+        # 所以 Vector([1,2,3]) + Vector([4,5]) 会静默地返回 Vector([5, 7])，
+        # 维数从 3 悄悄变成 2。这类"不报错的错"是 AI 代码里最难查的 bug。
         return Vector([a + b for a, b in zip(self.components, other.components)])
 
     def __sub__(self, other):
-        # 向量减法：对应位置相减
+        """向量减法：对应位置相减（- 运算符，同样由 Python 自动调用）。"""
         return Vector([a - b for a, b in zip(self.components, other.components)])
 
     def __mul__(self, scalar):
-        # 数乘：每个分量乘同一个标量（齐次性的实现）
-        # 这就是"线性"的第二条规矩：放大输入，输出同比例放大
+        """数乘：每个分量都乘同一个数（* 运算符）。这就是"齐次性"的代码实现。
+
+        注意参数名是 scalar（标量），意思是这里只接受"一个数"，不是向量。
+        含义：输入放大 k 倍，输出也放大 k 倍。
+        """
         return Vector([x * scalar for x in self.components])
 
     def dot(self, other):
-        # 点积：对应位置相乘，再全部加起来，结果是一个数
-        # a·b = a1b1 + a2b2 + ... + anbn
+        """点积：对应位置相乘，再全部加起来。结果是一个数，不是向量。
+
+        公式：a·b = a1×b1 + a2×b2 + ... + an×bn
+        例子：[1,2,3] · [4,5,6] = 1×4 + 2×5 + 3×6 = 32
+
+        意义：它衡量"两个箭头的方向有多一致"。
+        避坑：点积的大小同时受"方向"和"长度"影响。
+              [1,0] · [100,0] = 100，只是因为对方很长，不是因为方向多像。
+              所以点积不能直接当"像不像"用——要用下面的余弦相似度。
+        """
         return sum(a * b for a, b in zip(self.components, other.components))
 
     def magnitude(self):
-        # 模（长度）：勾股定理，√(x1² + x2² + ... + xn²)
+        """模（长度）：勾股定理。√(x1² + x2² + ... + xn²)
+
+        x**2 是 x 的平方；** 0.5 就是开平方（开平方 = 0.5 次方）。
+        """
         return sum(x**2 for x in self.components) ** 0.5
 
     def normalize(self):
-        # 归一化：把向量缩放到长度为 1，只保留方向、丢掉长度
+        """归一化：把向量缩放到长度为 1，只保留方向、丢掉长度。
+
+        做法：每个分量都除以自己的长度。得到的结果叫"单位向量"。
+        """
         mag = self.magnitude()
         return Vector([x / mag for x in self.components])
 
     def cosine_similarity(self, other):
-        # 余弦相似度 = 点积 / (两边长度相乘)
-        # 范围固定在 -1 到 1，所以比裸点积更适合衡量"像不像"
-        # 语义检索、RAG、记忆系统里算的相似度，通常就是它
+        """余弦相似度 = 点积 ÷ (两边长度相乘)。
+
+        相当于"把长度约掉之后的点积"，所以它只反映方向像不像。
+        结果范围固定在 -1 到 1：
+            1  → 完全同向
+            0  → 垂直，毫无关系
+           -1  → 完全反向
+
+        语义检索、RAG、记忆门控里算的"相似度"，通常就是它。
+        """
         return self.dot(other) / (self.magnitude() * other.magnitude())
 
     def angle_between(self, other):
-        # 夹角（角度制）：用反余弦把相似度换算回角度
+        """夹角（角度制）：用反余弦把相似度换算回角度。
+
+        因为 cos θ = 余弦相似度，所以 θ = arccos(余弦相似度)。
+        """
         import math
 
         cos_theta = self.cosine_similarity(other)
-        # 浮点误差可能让结果变成 1.0000000001，acos 会直接报错，所以先夹住范围
+        # 避坑：小数运算有浮点误差，结果可能变成 1.0000000001，
+        # 而 acos 只接受 [-1, 1] 范围内的输入，超出就会直接报错。
+        # 所以先用 max/min 把它"夹"回合法范围。
         cos_theta = max(-1.0, min(1.0, cos_theta))
         return math.degrees(math.acos(cos_theta))
 
     def project_onto(self, other):
-        # 投影：把 self 投到 other 这根方向上，得到在 other 上的"影子"
-        # 影子长度 = (self·other) / |other|，再乘上 other 的方向
+        """投影：把 self 投到 other 这根方向上，得到在 other 上的"影子"。
+
+        影子长度 = (self·other) ÷ |other|，再乘上 other 的方向就是影子向量。
+        了解级：本课不深究，知道有这回事即可。
+        """
         scalar = self.dot(other) / other.dot(other)
         return Vector([scalar * x for x in other.components])
 
     def __repr__(self):
-        # 决定 print 出来长什么样
+        """决定 print 出来长什么样。
+
+        又一个魔法方法：当 Python 需要把对象变成字符串展示时（比如 print、
+        或是在交互环境里直接敲变量名），会自动调用它。
+        f"..." 是 f-string，字符串里用 {} 就能把变量的值直接嵌进去。
+        """
         return f"Vector({self.components})"
 
 
